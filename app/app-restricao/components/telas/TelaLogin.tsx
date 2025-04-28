@@ -5,7 +5,7 @@ export default function TelaLogin() {
   return (
     <View>
       <View style={{ 
-      backgroundColor: 'gray', 
+      backgroundColor: '#768E91', 
       borderBottomLeftRadius: 15, 
       borderBottomRightRadius: 15, 
       paddingVertical: 40,
@@ -18,21 +18,28 @@ export default function TelaLogin() {
       </Text>
       </View>
 
-      <View style={{ flex: 1, width: '100%', padding: 16 }}>
+      <View style={{ flex: 1, padding: 16 }}>
       <Text style={{fontSize: 30}}>Entrar na conta</Text>
+      <View/>
 
-      <View style={{ flex: 1, width: '100%', paddingTop: 80, gap: 8 }}>
-      <Text style={{fontSize: 24}}>Endereço de email:</Text>
-      <TextInput style={[styles.placeholder, { width: '100%' }]} placeholder='email@dominio.com' placeholderTextColor="black"></TextInput>
-      <Text style={{fontSize: 24}}>Senha:</Text>
+      <View style={{marginTop: 20,
+      backgroundColor: 'white',
+      borderRadius: 5,
+      borderColor: 'gray',
+      width: '100%',
+      paddingTop: 50,
+      }}>
+      <Text style={{fontSize: 24, paddingBottom: 10}}>Endereço de email:</Text>
+      <TextInput style={[styles.placeholder, { width: '100%'}]} placeholder='email@dominio.com' placeholderTextColor="black"></TextInput>
+      <Text style={{fontSize: 24, paddingTop: 20, paddingBottom: 10}}>Senha:</Text>
       <TextInput style={[styles.placeholder, { width: '100%' }]} placeholder='********' placeholderTextColor='black'></TextInput>
       <Text style={{color: 'black', fontSize: 18}}
       onPress={() => Linking.openURL('')}>Esqueceu a senha?</Text>
       </View>
-      
-      <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 16, marginBottom: 16 }}>
-        <TouchableOpacity style={[styles.button, { width: '80%' }]} onPress={() => alert('Botão pressionado')}>
-          <Text style={{ textAlign: 'center' }}>Entrar</Text>
+
+      <View>
+        <TouchableOpacity style={[styles.button, { width: '50%' }]} onPress={() => alert('Login Realizado!')}>
+          <Text style={{ textAlign: 'center', fontSize: 20 }}>Entrar</Text>
         </TouchableOpacity>
         <Text style={{ color: 'black', textAlign: 'center', marginTop: 8 }}
           onPress={() => Linking.openURL('')}>Não tem uma conta? Crie a sua</Text>
@@ -53,15 +60,15 @@ const styles = {
   button: {
     color: 'black',
     borderRadius: 5,
-    backgroundColor: 'gray',
+    backgroundColor: '#6CA08B',
     padding: 10,
-    textAlign: 'center',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignSelf: 'center',
+    marginTop: 260,
 },
   placeholder: {
     borderWidth: 2,
     borderColor: 'gray',
-    borderRadius: 3
-  }
+    borderRadius: 10,
+    padding: 10,
+  },
 }
