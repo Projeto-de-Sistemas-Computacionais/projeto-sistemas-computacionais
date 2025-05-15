@@ -14,7 +14,18 @@ public class Avaliacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private int nota;
+
+    private Date data;
+
+    private Usuario usuario;
+
+    private Restaurante restaurante;
+
+    private Receita receita;
+
+    private Produto produto;
+    
     private String comentario;
 
-    private Double nota;
 }
