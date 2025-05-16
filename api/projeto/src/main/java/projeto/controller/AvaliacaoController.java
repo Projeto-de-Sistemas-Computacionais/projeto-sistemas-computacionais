@@ -34,11 +34,12 @@ public class AvaliacaoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Avaliacao> atualizar(@PathVariable Long id, @RequestBody Avaliacao avaliacao) {
-        if (!avaliacaoService.buscaPorId(id)) {
-            return ResponseEntity.notFound().build();
+        Optional<Avaliacao> avaliacaoExistente = avaliacaoService.buscarPorId(id);
+        if (avaliacaoExistente.isPresent()) {
+            Avaliacao avaliacaoAtualizada = avaliacaoService.atualizar(id, avaliacao);
+            return ResponseEntity.ok(avaliacaoAtualizada);
         }
-        avaliacao.setId(id);
-        return ResponseEntity.ok(avaliacaoService.salvar(avaliacao));
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

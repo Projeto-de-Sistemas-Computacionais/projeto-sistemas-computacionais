@@ -8,27 +8,34 @@ import java.util.ArrayList;
 @Service
 public class AvaliacaoService {
 
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+
     public List<Avaliacao> buscaTodos() {
-        // Implementar
-        return new ArrayList<>();
+        return avaliacaoRepository.findAll();
     }
 
     public Avaliacao buscaPorId(Long id) {
-        // Implementar
-        return null;
+        return avaliacaoRepository.findById(id)
     }
 
     public Avaliacao salvar(Avaliacao avaliacao) {
-        // Implementar
-        return avaliacao;
+        return avaliacaoRepository.save(avaliacao);
     }
 
     public Avaliacao atualizar(Long id, Avaliacao avaliacao) {
-        // Implementar
-        return avaliacao;
+        Avaliacao avaliacaoExistente = avaliacaoRepository.findById(id);
+        if (avaliacaoExistente != null) {
+            avaliacao.setId(id);
+            return avaliacaoRepository.save(avaliacao); 
+        }
+        return null;
     }
 
     public void deletar(Long id) {
-        // Implementar
+        Avaliacao avaliacao = avaliacaoRepository.findById(id);
+        if (avaliacao != null) {
+            avaliacaoRepository.delete(avaliacao);
+        }
     }
 }
