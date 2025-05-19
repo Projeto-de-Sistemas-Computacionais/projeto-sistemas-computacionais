@@ -28,7 +28,6 @@ public class UsuarioService {
     @Autowired
     private RestricaoRepository restricaoRepository;
 
-    @Transactional
     public Usuario cadastrar(Usuario usuario){
         Endereco endereco = usuario.getEndereco();
         enderecoRepository.save(endereco); // salvo o endereco antes de salvar usuario, alterar para usar EnderecoService
@@ -40,7 +39,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuario); // salva o usuario no banco
     }
 
-    @Transactional
     public Usuario buscarPorId(Long id){
         return usuarioRepository.findById(id) // busca usuario pelo ID no banco
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Usuário com id %s não encontrado", id))); // caso não tenha um usuário com este ID, lança uma exception
