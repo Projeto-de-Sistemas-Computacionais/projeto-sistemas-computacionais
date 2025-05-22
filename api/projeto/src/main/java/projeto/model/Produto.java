@@ -25,6 +25,7 @@ public class Produto {
     )
     private List<Restricao> restricoes;
 
+    @ElementCollection
     private List<String> imagens;
 
     private String tabelaNutricional;
