@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 21,
     fontWeight: 'bold',
   },
   searchContainer: {
