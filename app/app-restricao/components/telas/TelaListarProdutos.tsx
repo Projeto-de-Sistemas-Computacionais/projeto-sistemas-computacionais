@@ -1,63 +1,73 @@
-import { View, Text, TextInput, TouchableOpacity, Dimensions, StyleSheet, FlatList, Image, Button } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Dimensions, StyleSheet, FlatList, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
 
 const { width } = Dimensions.get('window');
 
-interface Receita {
+interface Produto {
   id: string;
-  titulo: string;
+  nome: string;
   restricoes: string;
-  tempo: number;
+  fabricante: string;
+  nota: number;
 }
 
-const receitas = [
+const produtos = [
     {id: '1', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '2', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
         {id: '3', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '4', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '5', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '6', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '7', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6},
     {id: '8', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30}
+        nome: 'Nome do produto', 
+        restricoes: 'Restrição 1, restrição...', 
+        fabricante: 'Fabricante exe...', 
+        nota: 4.6}
 ]
 
-export default function TelaListarReceitas() {
+export default function TelaListarProdutos() {
 
-    const renderItem = ({ item }: { item: Receita }) => (
+    const renderItem = ({ item }: { item: Produto }) => (
         <TouchableOpacity>
-            <View style={styles.receitaCard}>
-                <Image source={require('assets/images/image-icon.jpg')} style={styles.receitaImagem}/>
-                <View style={styles.receitaInfo}>
-                    <Text style={styles.receitaNome}>{item.titulo}</Text>
+            <View style={styles.produtoCard}>
+                <Image source={require('../../assets/images/image-icon.jpg')} style={styles.produtoImagem}/>
+                <View style={styles.produtoInfo}>
+                    <Text style={styles.produtoNome}>{item.nome}</Text>
                     <Text style={styles.restricoes} numberOfLines={1}>{item.restricoes}</Text>
+                    <Text style={styles.fabricante} numberOfLines={1}>{item.fabricante}</Text>
                 </View>
                 <View style={styles.notaContainer}>
-                    <Ionicons name="time-outline" size={ 20 }/>
-                    <Text>{item.tempo}min</Text>
+                    <Ionicons name="star-outline" size={ 20 }/>
+                    <Text>{item.nota}</Text>
                 </View>
             </View>
         </TouchableOpacity>
@@ -70,7 +80,7 @@ export default function TelaListarReceitas() {
                 <TouchableOpacity>
                     <Ionicons name="arrow-back" size={24} />
                 </TouchableOpacity>
-                <Text style={styles.headerText}>Receitas</Text>
+                <Text style={styles.headerText}>Produtos</Text>
             </View>
 
             <View style={{ gap: 12 }}>
@@ -88,17 +98,10 @@ export default function TelaListarReceitas() {
 
             <View style={styles.divider}/>
 
-            <FlatList data={receitas} 
+            <FlatList data={produtos} 
             renderItem={renderItem} 
             keyExtractor={item => item.id} 
             contentContainerStyle={{ paddingBottom: 30 }} />
-
-            <View>
-                <TouchableOpacity style={styles.botaoCriarNova}>
-                    <Ionicons name="add" size={20} color="#fff" />
-                    <Text style={styles.botaoCriarNovaTexto}>Criar nova</Text>
-                </TouchableOpacity>
-            </View>
 
             <View style={styles.menuInferior}>
                 <TouchableOpacity style={styles.item}>
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#cccccc',
   },
-  receitaCard: {
+  produtoCard: {
     position: 'relative',
     backgroundColor: '#fef7e8',
     borderRadius: 12,
@@ -178,21 +181,25 @@ const styles = StyleSheet.create({
     paddingBottom: 25,
     marginBottom: 12,
   },
-  receitaImagem: {
+  produtoImagem: {
     width: 70,
     height: 70,
     backgroundColor: '#ccc',
   },
-  receitaInfo: {
+  produtoInfo: {
     flex: 1,
     marginLeft: 12,
   },
-  receitaNome: {
+  produtoNome: {
     fontWeight: 'bold',
     color: '#555555',
     fontSize: 18,
   },
   restricoes: {
+    color: '#555555',
+    fontSize: 16,
+  },
+  fabricante: {
     color: '#555555',
     fontSize: 16,
   },
@@ -208,29 +215,7 @@ const styles = StyleSheet.create({
     gap: 4,
     borderRadius: 12,
   },
-  botaoCriarNova: {
-    position: 'absolute',
-    bottom: 40,
-    left: 0,
-    right: 0,
-    backgroundColor: '#3D65D6',
-    borderRadius: 30,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  botaoCriarNovaTexto: {
-    color: '#fff',
-    fontSize: 15,
-    marginLeft: 8,
-  },
+
   menuInferior: {
     flexDirection: 'row',
     justifyContent: 'space-around',
