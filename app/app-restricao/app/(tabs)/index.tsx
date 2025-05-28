@@ -1,20 +1,12 @@
-import { Image, StyleSheet, Platform, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import React from 'react';
 import TelaLogin from '@/components/telas/TelaLogin';
+import TelaListagemRestaurantes from '@/components/telas/TelaListagemRestaurantes';
 
 export default function HomeScreen() {
   return (
-    <View style={styles.titleContainer}>
-      <TelaLogin />
+    <View>
+      <TelaListagemRestaurantes/>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-});
