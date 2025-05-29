@@ -29,11 +29,11 @@ public class ProdutoService {
     public Produto atualizar(Long id, Produto produtoAtualizado) {
         Produto produtoExistente = buscarPorId(id);
 
-        produtoExistente.setNome(produtoAtualizado.getNome());
-        produtoExistente.setDescricao(produtoAtualizado.getDescricao());
-        produtoExistente.setRestricoes(produtoAtualizado.getRestricoes());
-        produtoExistente.setImagens(produtoAtualizado.getImagens());
-        produtoExistente.setTabelaNutricional(produtoAtualizado.getTabelaNutricional());
+//        produtoExistente.setNome(produtoAtualizado.getNome());
+//        produtoExistente.setDescricao(produtoAtualizado.getDescricao());
+//        produtoExistente.setRestricoes(produtoAtualizado.getRestricoes());
+//        produtoExistente.setImagens(produtoAtualizado.getImagens());
+//        produtoExistente.setTabelaNutricional(produtoAtualizado.getTabelaNutricional());
 
         return produtoRepository.save(produtoExistente);
     }
