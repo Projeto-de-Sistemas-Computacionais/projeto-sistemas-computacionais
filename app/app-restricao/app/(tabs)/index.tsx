@@ -1,3 +1,4 @@
+
 import { ScrollView, Text, View } from 'react-native';
 import React from 'react';
 import TelaLogin from '@/components/telas/TelaLogin';
@@ -12,6 +13,5 @@ export default function HomeScreen() {
        <DetalhamentoRestaurante/>
       </View>
     </ScrollView>
-      
   );
 }
