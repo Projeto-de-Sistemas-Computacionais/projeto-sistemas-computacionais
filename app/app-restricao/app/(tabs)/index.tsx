@@ -1,11 +1,13 @@
 import { Image, StyleSheet, Platform, Text, View } from 'react-native';
 import React from 'react';
-import TelaLogin from '@/components/telas/TelaLogin';
+import TelaCadastro from '../../components/telas/TelaCadastro';
+import TelaCadastroReceita from '../../components/telas/TelaCadastroReceita';
+
 
 export default function HomeScreen() {
   return (
     <View style={styles.titleContainer}>
-      <TelaLogin />
+      <TelaCadastroReceita/>
     </View>
   );
 }
