@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
 import {Picker} from '@react-native-picker/picker';
+
 export default function TelaCadastro() {
 
     const [nome, setNome] = useState('');
