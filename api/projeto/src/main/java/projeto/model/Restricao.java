@@ -36,5 +36,5 @@ public class Restricao {
             joinColumns = @JoinColumn(name = "id_restricao"),
             inverseJoinColumns = @JoinColumn(name = "id_restaurante")
     )
-    private List<Retaurante> restaurantes;
+    private List<Restaurante> restaurantes;
 }
