@@ -32,7 +32,7 @@ public class ProdutoService {
         produtoExistente.setNome(produtoAtualizado.getNome());
         produtoExistente.setDescricao(produtoAtualizado.getDescricao());
         produtoExistente.setRestricoes(produtoAtualizado.getRestricoes());
-        //produtoExistente.setImagens(produtoAtualizado.getImagens());
+        produtoExistente.setImagens(produtoAtualizado.getImagens());
         produtoExistente.setTabelaNutricional(produtoAtualizado.getTabelaNutricional());
 
         return produtoRepository.save(produtoExistente);
