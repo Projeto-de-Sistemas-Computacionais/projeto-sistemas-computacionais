@@ -1,5 +1,13 @@
 package projeto.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
@@ -7,7 +15,6 @@ import java.util.List;
 @Data
 @Entity
 public class Restaurante {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,15 +26,12 @@ public class Restaurante {
 
     private String senha;
 
-    
     private String imagem;
 
-    
     @OneToOne
     @JoinColumn(name = "id_endereco")
     private Endereco endereco;
-
-    
+  
     @ManyToMany
     @JoinTable(
         name = "restaurante_restricao",
@@ -35,5 +39,4 @@ public class Restaurante {
         inverseJoinColumns = @JoinColumn(name = "id_restricao")
     )
     private List<Restricao> restricoes;
-
 }
