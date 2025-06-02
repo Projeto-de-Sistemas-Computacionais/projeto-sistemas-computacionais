@@ -29,6 +29,10 @@ public class UsuarioService {
     private RestricaoRepository restricaoRepository;
 
     public Usuario cadastrar(Usuario usuario){
+        boolean usuarioExistente = usuarioRepository.existsByEmail(usuario.getEmail());
+        if(usuarioExistente)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já cadastrado com o email informado.");
+
         Endereco endereco = usuario.getEndereco();
         enderecoRepository.save(endereco); // salvo o endereco antes de salvar usuario, alterar para usar EnderecoService
 
@@ -60,5 +64,16 @@ public class UsuarioService {
     public void deletar(Long id){
         buscarPorId(id); // busca por id, quando não encontrar ele vai lançar exception e não vai continuar o próximo passo
         usuarioRepository.deleteById(id); // deleta o usuario pelo id informado
+    }
+
+    public Usuario login(String email, String senha) {
+        if (!usuarioRepository.existsByEmail(email)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Usuário com email %s não encontrado", email));
+        }
+        Usuario usuarioEncontrado = usuarioRepository.findByEmailAndSenha(email, senha);
+        if (usuarioEncontrado == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha estão incorretos");
+        }
+        return usuarioEncontrado;
     }
 }

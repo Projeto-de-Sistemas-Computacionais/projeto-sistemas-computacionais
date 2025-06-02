@@ -25,13 +25,13 @@ public class Produto {
     )
     private List<Restricao> restricoes;
 
-    @ElementCollection
+    /*@ElementCollection
     @CollectionTable(
             name = "produto_imagens",
             joinColumns = @JoinColumn(name = "produto_id")
     )
     @Column(name = "imagem")
-    private List<String> imagens;
+    private List<String> imagens;*/
 
 
     private String tabelaNutricional;

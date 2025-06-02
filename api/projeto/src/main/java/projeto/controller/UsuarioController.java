@@ -1,11 +1,16 @@
 package projeto.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import projeto.dto.request.LoginUsuarioRequest;
 import projeto.model.Endereco;
+import projeto.model.Session;
 import projeto.model.Usuario;
+import projeto.service.SessionService;
 import projeto.service.UsuarioService;
 
 import java.util.List;
@@ -17,6 +22,9 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @PostMapping
     public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario){
         Usuario response = usuarioService.cadastrar(usuario);
@@ -24,26 +32,62 @@ public class UsuarioController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id){
+    public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+
         Usuario response = usuarioService.buscarPorId(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> buscarTodos(){
+    public ResponseEntity<List<Usuario>> buscarTodos(@RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+
         List<Usuario> response = usuarioService.buscarTodos();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody Usuario usuario){
+    public ResponseEntity<Usuario> atualizar(@PathVariable Long id, @RequestBody Usuario usuario, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+
         Usuario response = usuarioService.atualizar(id, usuario);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id){
+    public ResponseEntity<Void> deletar(@PathVariable Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+
         usuarioService.deletar(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginUsuarioRequest request) {
+            Usuario userLogged = usuarioService.login(request.getEmail(), request.getSenha());
+
+            Session session = sessionService.findByUserId(userLogged.getId());
+
+            if (session == null) {
+                session = new Session(userLogged.getId());
+                sessionService.createSession(session);
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário já está logado.");
+            }
+
+            // Adding the token to the response header
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set("login-token", session.getToken());
+
+            return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body("Usuário logado.");
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("login-token") String token) {
+            sessionService.invalidateSession(token);
+            return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
     }
 }
