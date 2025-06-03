@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet, ScrollView, Button, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export default function TelaCadastroReceita() {
@@ -34,7 +33,7 @@ export default function TelaCadastroReceita() {
 
             <View style={styles.menuSup}>
                 <TouchableOpacity>
-                    <Ionicons name="arrow-back" size={24} />
+                    <Ionicons name="arrow-back" size={24} color={'#fff7e8'}/>
                 </TouchableOpacity>
                 <Text style={styles.titulo}>Nova receita</Text>
             </View>
@@ -174,7 +173,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 20,
     },
     titulo: {
-        color: 'black',
+        color:'#fff7e8',
         fontSize: 26,
         marginTop: 20,
     },
