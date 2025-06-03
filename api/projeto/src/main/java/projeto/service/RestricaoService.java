@@ -35,7 +35,7 @@ public class RestricaoService {
 
 
     public Restricao atualizar(Long id, Restricao restricao){
-        Restricao antigaRestricao = buscarPorId(id);
+      //  Restricao antigaRestricao = buscarPorId(id);
         restricao.setId(id);
         return restricaoRepository.save(restricao);
     }
