@@ -3,6 +3,7 @@ package projeto.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -31,7 +32,7 @@ public class Produto {
             joinColumns = @JoinColumn(name = "produto_id")
     )
     @Column(name = "imagem")
-    private List<String> imagens;
+    private List<String> imagens = new ArrayList<>();
 
 
     private String tabelaNutricional;
