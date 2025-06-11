@@ -16,7 +16,8 @@ public class RestricaoController {
     RestricaoService restricaoService;
 
     @PostMapping
-    public ResponseEntity<Restricao> cadastrar(@RequestParam("restricao") Restricao restricao){
+    public ResponseEntity<Restricao> cadastrar(@RequestParam("restricao") Restricao restricao, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.cadastrar(restricao));
     }
 
@@ -26,26 +27,30 @@ public class RestricaoController {
 //    }
 
     @GetMapping
-    public ResponseEntity<List<Restricao>> buscarTodos(){
+    public ResponseEntity<List<Restricao>> buscarTodos(@RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.buscarTodos());
     }
 
     @GetMapping("{id}")
     @ResponseBody
-    public ResponseEntity<Restricao> BuscarPorId(@PathVariable("id") Long id){
+    public ResponseEntity<Restricao> BuscarPorId(@PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.buscarPorId(id));
     }
 
 
     @PutMapping("{id}")
     @ResponseBody
-    public ResponseEntity<Restricao> atualizar(@RequestParam("restricao") Restricao restricao, @PathVariable("id") Long id){
+    public ResponseEntity<Restricao> atualizar(@RequestParam("restricao") Restricao restricao, @PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.atualizar(id, restricao));
     }
 
     @DeleteMapping("/{id}")
     @ResponseBody
-    public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deletar(@PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         restricaoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
