@@ -6,15 +6,19 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MenuInferior from '../ui/MenuInferior';
+import { Colors } from '../../constants/Colors';
 
 export default function DetalhamentoReceita() {
+  const { width } = Dimensions.get('window');
+  
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-
           <View style={styles.header}>
             <View style={styles.headerIcons}>
               <TouchableOpacity>
@@ -29,10 +33,8 @@ export default function DetalhamentoReceita() {
 
           <View style={styles.avaliacoes}>
             <View style={styles.starsRow}>
-              {[...Array(5)].map((_, i) => (
-                <TouchableOpacity key={i}>
+              {[...Array(5)].map((_) => (
                   <Ionicons name="star-outline" size={25} />
-                </TouchableOpacity>
               ))}
               <Text style={styles.avaliacoesTexto}>0 Avaliações</Text>
             </View>
@@ -88,25 +90,8 @@ export default function DetalhamentoReceita() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-
-        <View style={styles.menuInferior}>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name="home-outline" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name="location-outline" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name="add-circle-outline" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name="bookmark-outline" size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name="person-outline" size={24} />
-          </TouchableOpacity>
+        <MenuInferior/>
         </View>
-      </View>
     </SafeAreaView>
   );
 }
@@ -116,7 +101,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   header: {
-    backgroundColor: '#768E91',
+    backgroundColor: Colors.darkGreen,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     height: 200,
@@ -130,7 +115,7 @@ const styles = StyleSheet.create({
   restaurantName: {
     textAlign: 'center',
     fontSize: 34,
-    color: 'white',
+    color: Colors.white,
     paddingTop: 40,
   },
   avaliacoes: {
@@ -200,6 +185,8 @@ const styles = StyleSheet.create({
   botaoWrapper: {
     alignItems: 'center',
     paddingTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
   botaoAvaliacao: {
     backgroundColor: '#216AC1',
@@ -220,22 +207,6 @@ const styles = StyleSheet.create({
   textoBotao: {
     textAlign: 'center',
     fontSize: 20,
-    color: 'white',
-  },
-  menuInferior: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 70,
-    backgroundColor: '#fef7e9',
-    borderColor: '#ddd',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  item: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    color: Colors.white,
   },
 });
