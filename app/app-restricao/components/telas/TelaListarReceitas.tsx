@@ -50,7 +50,7 @@ export default function TelaListarReceitas() {
     const renderItem = ({ item }: { item: Receita }) => (
         <TouchableOpacity>
             <View style={styles.receitaCard}>
-                <Image source={require('assets/images/image-icon.jpg')} style={styles.receitaImagem}/>
+                <Image source={require('../../assets/images/image-icon.jpg')} style={styles.receitaImagem}/>
                 <View style={styles.receitaInfo}>
                     <Text style={styles.receitaNome}>{item.titulo}</Text>
                     <Text style={styles.restricoes} numberOfLines={1}>{item.restricoes}</Text>
