@@ -1,17 +1,17 @@
 package projeto.service;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import projeto.repository.RestricaoRepository;
-import projeto.model.Endereco;
-import projeto.model.Restricao;
-import projeto.model.Restaurante;
-import projeto.model.Usuario;
-import projeto.repository.RestauranteRepository;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
+import projeto.model.Endereco;
+import projeto.model.Restaurante;
+import projeto.model.Restricao;
+import projeto.repository.RestauranteRepository;
+import projeto.repository.RestricaoRepository;
 
 @Slf4j
 @Service
@@ -22,10 +22,13 @@ public class RestauranteService {
 
     @Autowired
     private RestricaoRepository restricaoRepository;
+    
+    @Autowired
+    private EnderecoService enderecoService;
 
     public Restaurante cadastrar(Restaurante restaurante){
         Endereco endereco = restaurante.getEndereco();
-        restauranteRepository.save(endereco); // salvo o endereco antes de salvar restaurante, alterar para usar EnderecoService
+        enderecoService.salvar(endereco); // salvo o endereco antes de salvar restaurante, alterar para usar EnderecoService
 
         List<Restricao> restricoes = restaurante.getRestricoes();
         for(Restricao restricao : restricoes)
