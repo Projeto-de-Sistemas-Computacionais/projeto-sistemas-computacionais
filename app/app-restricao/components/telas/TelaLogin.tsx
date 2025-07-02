@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
