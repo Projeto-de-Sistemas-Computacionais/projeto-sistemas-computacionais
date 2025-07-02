@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
-  Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -15,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get("window");
 
-export default function TelaLogin({ navigation }) {
+export default function TelaLogin() {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const [senha, setSenha] = useState("");
   const [email, setEmail] = useState("");
@@ -27,7 +26,7 @@ export default function TelaLogin({ navigation }) {
   const realizarLogin = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:8080/usuarios/login", // Altere para o IP da sua máquina se estiver usando emulador
+        "http://localhost:8080/usuarios/login",
         {
           email: email,
           senha: senha,
@@ -37,20 +36,16 @@ export default function TelaLogin({ navigation }) {
       if (response.status === 200) {
         const token = response.headers["login-token"];
         console.log(response.headers);
+        //adicionar navegacao rota aqui
         if (token) {
           await AsyncStorage.setItem("authToken", token);
           console.log("Token salvo:", token);
-
-          Alert.alert("Sucesso", "Login realizado com sucesso!");
         } else {
           console.warn("Token não encontrado no header");
-          Alert.alert("Erro", "Token não recebido do servidor.");
         }
       }
     } catch (erro) {
       console.error("Erro no login:", erro);
-      await AsyncStorage.clear();
-      Alert.alert("Erro", "Usuário ou senha inválidos.");
     }
   };
 
