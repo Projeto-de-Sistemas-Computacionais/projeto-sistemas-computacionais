@@ -87,8 +87,8 @@ public class UsuarioController {
                     .body("Usuário logado.");
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody Object object ,@RequestHeader("login-token") String token) {
+    @PostMapping("logout")
+    public ResponseEntity<String> logout(@RequestHeader("login-token") String token) {
             sessionService.invalidateSession(token);
             return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
     }
