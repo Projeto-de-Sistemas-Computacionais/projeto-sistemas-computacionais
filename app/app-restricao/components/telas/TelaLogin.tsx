@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
   StyleSheet,
+  Alert,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
@@ -51,7 +52,7 @@ export default function TelaLogin() {
       if (response.status === 200) {
         const token = response.headers["login-token"];
         console.log(response.headers);
-        //adicionar navegacao rota aqui
+
         if (token) {
           await AsyncStorage.setItem("authToken", token);
           console.log("Token salvo:", token);
