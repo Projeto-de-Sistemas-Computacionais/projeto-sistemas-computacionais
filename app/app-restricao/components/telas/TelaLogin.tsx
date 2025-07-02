@@ -1,29 +1,73 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Linking,
+  TouchableOpacity,
+  Dimensions,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
-export default function TelaLogin() {
+export default function TelaLogin({ navigation }) {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
-  const [senha, setSenha] = useState('');
+  const [senha, setSenha] = useState("");
+  const [email, setEmail] = useState("");
 
   const alternarVisibilidadeSenha = () => {
     setSenhaVisivel(!senhaVisivel);
   };
 
+  const realizarLogin = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/usuarios/login", // Altere para o IP da sua máquina se estiver usando emulador
+        {
+          email: email,
+          senha: senha,
+        }
+      );
+
+      if (response.status === 200) {
+        const token = response.headers["login-token"];
+        console.log(response.headers);
+        if (token) {
+          await AsyncStorage.setItem("authToken", token);
+          console.log("Token salvo:", token);
+
+          Alert.alert("Sucesso", "Login realizado com sucesso!");
+        } else {
+          console.warn("Token não encontrado no header");
+          Alert.alert("Erro", "Token não recebido do servidor.");
+        }
+      }
+    } catch (erro) {
+      console.error("Erro no login:", erro);
+      await AsyncStorage.clear();
+      Alert.alert("Erro", "Usuário ou senha inválidos.");
+    }
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ 
-        backgroundColor: '#768E91', 
-        borderBottomLeftRadius: 15, 
-        borderBottomRightRadius: 15, 
-        paddingVertical: 40,
-        paddingHorizontal: 100,
-        alignItems: 'center',
-        width: '100%',
-      }}>
-        <Text style={{ fontSize: 32, color: 'black', textAlign: 'center' }}>
+      <View
+        style={{
+          backgroundColor: "#768E91",
+          borderBottomLeftRadius: 15,
+          borderBottomRightRadius: 15,
+          paddingVertical: 40,
+          paddingHorizontal: 100,
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <Text style={{ fontSize: 32, color: "black", textAlign: "center" }}>
           Bem vindo(a) ao (nome aqui)!
         </Text>
       </View>
@@ -34,9 +78,12 @@ export default function TelaLogin() {
         <View style={styles.formContainer}>
           <Text style={styles.label}>Endereço de email:</Text>
           <TextInput
-            style={[styles.input]}
+            style={styles.input}
             placeholder='email@dominio.com'
-            placeholderTextColor="black"
+            placeholderTextColor='black'
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize='none'
           />
 
           <Text style={[styles.label, { marginTop: 20 }]}>Senha:</Text>
@@ -44,23 +91,26 @@ export default function TelaLogin() {
             <TextInput
               style={styles.input}
               placeholder='********'
-              placeholderTextColor="black"
+              placeholderTextColor='black'
               secureTextEntry={!senhaVisivel}
               value={senha}
               onChangeText={setSenha}
             />
-            <TouchableOpacity onPress={alternarVisibilidadeSenha} style={styles.icon}>
+            <TouchableOpacity
+              onPress={alternarVisibilidadeSenha}
+              style={styles.icon}
+            >
               <Ionicons
-                name={senhaVisivel ? 'eye-off' : 'eye'}
+                name={senhaVisivel ? "eye-off" : "eye"}
                 size={24}
-                color="gray"
+                color='gray'
               />
             </TouchableOpacity>
           </View>
 
           <Text
-            style={{ color: 'black', fontSize: 18, marginTop: 10 }}
-            onPress={() => Linking.openURL('')}
+            style={{ color: "black", fontSize: 18, marginTop: 10 }}
+            onPress={() => Linking.openURL("")}
           >
             Esqueceu a senha?
           </Text>
@@ -68,15 +118,15 @@ export default function TelaLogin() {
 
         <View>
           <TouchableOpacity
-            style={[styles.button, { width: '50%' }]}
-            onPress={() => alert('Login Realizado!')}
+            style={[styles.button, { width: "50%" }]}
+            onPress={realizarLogin}
           >
-            <Text style={{ textAlign: 'center', fontSize: 20 }}>Entrar</Text>
+            <Text style={{ textAlign: "center", fontSize: 20 }}>Entrar</Text>
           </TouchableOpacity>
 
           <Text
-            style={{ color: 'black', textAlign: 'center', marginTop: 8 }}
-            onPress={() => Linking.openURL('')}
+            style={{ color: "black", textAlign: "center", marginTop: 8 }}
+            onPress={() => Linking.openURL("")}
           >
             Não tem uma conta? Crie a sua
           </Text>
@@ -89,9 +139,9 @@ export default function TelaLogin() {
 const styles = StyleSheet.create({
   formContainer: {
     marginTop: 20,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 5,
-    borderColor: 'gray',
+    borderColor: "gray",
     paddingTop: 50,
     paddingHorizontal: 16,
   },
@@ -101,29 +151,29 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 2,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderRadius: 10,
     padding: 10,
-    paddingRight: 40, // espaço para o ícone
+    paddingRight: 40,
     fontSize: 16,
   },
   passwordContainer: {
-    position: 'relative',
-    justifyContent: 'center',
+    position: "relative",
+    justifyContent: "center",
   },
   icon: {
-    position: 'absolute',
+    position: "absolute",
     right: 15,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   button: {
-    color: 'black',
+    color: "black",
     borderRadius: 5,
-    backgroundColor: '#6CA08B',
+    backgroundColor: "#6CA08B",
     padding: 10,
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 210,
   },
 });
