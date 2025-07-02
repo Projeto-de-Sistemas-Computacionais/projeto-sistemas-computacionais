@@ -19,6 +19,8 @@ public class Fabricante {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 
+	private String nome;
+	
     @OneToOne
     @JoinColumn(name = "id_endereco")
 	private Endereco endereco;

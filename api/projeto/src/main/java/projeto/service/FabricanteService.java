@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 import projeto.model.Endereco;
 import projeto.model.Fabricante;
 import projeto.model.Produto;
-import projeto.repository.EnderecoRepository;
 import projeto.repository.FabricanteRepository;
 import projeto.repository.ProdutoRepository;
 
@@ -18,10 +17,10 @@ public class FabricanteService {
     private FabricanteRepository fabricanteRepository;
 
     @Autowired
-    private EnderecoRepository enderecoRepository;
+    private EnderecoService enderecoService;
 
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private ProdutoService produtoService;
 
     public Fabricante cadastrar(Fabricante fabricante){
         boolean fabricanteExistente = fabricanteRepository.existsById(fabricante.getId());
@@ -29,11 +28,11 @@ public class FabricanteService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fabricante já cadastrado com o email informado.");
 
         Endereco endereco = fabricante.getEndereco();
-        enderecoRepository.save(endereco); // salvo o endereco antes de salvar o fabricante, alterar para usar EnderecoService
+        enderecoService.salvar(endereco); // salvo o endereco antes de salvar o fabricante, alterar para usar EnderecoService
 
         List<Produto> produtos = fabricante.getProdutos();
         for(Produto produto : produtos)
-            produtoRepository.save(produto); // salva produtos no banco, alterar para usar ProdutoService
+        	produtoService.cadastrar(produto); // salva produtos no banco
 
         return fabricanteRepository.save(fabricante); // salva o fabricante no banco
     }
