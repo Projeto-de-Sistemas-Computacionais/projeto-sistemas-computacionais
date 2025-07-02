@@ -15,6 +15,7 @@ import projeto.service.UsuarioService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -82,11 +83,12 @@ public class UsuarioController {
 
             return ResponseEntity.ok()
                     .headers(responseHeaders)
+                    .header("Access-Control-Expose-Headers", "login-token")
                     .body("Usuário logado.");
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("login-token") String token) {
+    public ResponseEntity<String> logout(@RequestBody Object object ,@RequestHeader("login-token") String token) {
             sessionService.invalidateSession(token);
             return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
     }
