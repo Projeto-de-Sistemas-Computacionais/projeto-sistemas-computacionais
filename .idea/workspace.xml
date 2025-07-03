@@ -13,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2y0qbZd4XIk67dQ4hxkYOmLktAI" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -28,17 +28,17 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "mgxo/arrumando-arquivos-conflitantes",
+    "git-widget-placeholder": "mgxo/adicionando-token-restricao",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Documents/projeto-sistemas-computacionais/api/projeto/src/main/java/projeto/service"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\repository" />
-      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\model" />
-      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\controller" />
       <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\service" />
+      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\controller" />
+      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\model" />
+      <recent name="D:\Documents\projeto-sistemas-computacionais\api\projeto\src\main\java\projeto\repository" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
