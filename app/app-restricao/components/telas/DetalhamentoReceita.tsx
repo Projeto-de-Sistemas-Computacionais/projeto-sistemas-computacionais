@@ -1,27 +1,31 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-  Dimensions,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MenuInferior from '../ui/MenuInferior';
 import { Colors } from '../../constants/Colors';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
 
 export default function DetalhamentoReceita() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  async function paraTelaInicial() {
+    navigation.navigate("TelaInicial");
+  }
+
+  async function paraTelaListarReceitas() {
+    navigation.navigate("TelaListarReceitas");
+  }
+
   const { width } = Dimensions.get('window');
-  
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.header}>
             <View style={styles.headerIcons}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={paraTelaListarReceitas}>
                 <Ionicons name="arrow-back-outline" size={32} color="white" />
               </TouchableOpacity>
               <TouchableOpacity>
@@ -34,7 +38,7 @@ export default function DetalhamentoReceita() {
           <View style={styles.avaliacoes}>
             <View style={styles.starsRow}>
               {[...Array(5)].map((_) => (
-                  <Ionicons name="star-outline" size={25} />
+                <Ionicons name="star-outline" size={25} />
               ))}
               <Text style={styles.avaliacoesTexto}>0 Avaliações</Text>
             </View>
@@ -90,8 +94,8 @@ export default function DetalhamentoReceita() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-        <MenuInferior/>
-        </View>
+        <MenuInferior />
+      </View>
     </SafeAreaView>
   );
 }

@@ -5,25 +5,39 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function MenuInferior() {
+  const navigation = useNavigation<NavigationProp<any>>();
+  
+    async function paraTelaInicial() {
+      navigation.navigate("TelaInicial");
+    }
+
+    async function paraTelaCadastroReceita() {
+      navigation.navigate("TelaCadastroReceita");
+    }
+
+    async function paraTelaMeuPerfil() {
+      navigation.navigate("TelaMeuPerfil");
+    }
   
   return (
         <View style={styles.menuInferior}>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
             <Ionicons name="home-outline" size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
             <Ionicons name="location-outline" size={24} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
+          <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
             <Ionicons name="add-circle-outline" size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
             <Ionicons name="bookmark-outline" size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <Ionicons name="person-outline" size={24} />
+            <Ionicons name="person-outline" size={24} onPress={paraTelaMeuPerfil}/>
           </TouchableOpacity>
         </View>
   );

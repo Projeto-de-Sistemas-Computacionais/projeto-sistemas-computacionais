@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, FlatList, 
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 interface Receita {
   id: string;
@@ -21,7 +22,22 @@ const receitas = [
   { id: '8', titulo: 'Título da receita', restricoes: 'Restrição', tempo: 30 }
 ];
 
-export default function TelaMeuPerfil({ navigation }: any) {
+export default function TelaMeuPerfil() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  async function paraTelaInicial() {
+    navigation.navigate("TelaInicial");
+  }
+
+  async function paraTelaCadastroReceita() {
+    navigation.navigate("TelaCadastroReceita");
+  }
+
+  async function paraTelaMeuPerfil() {
+    navigation.navigate("TelaMeuPerfil");
+  }
+
+
   const [modalVisible, setModalVisible] = useState(false);
 
   const renderItem = ({ item }: { item: Receita }) => (
@@ -45,7 +61,7 @@ export default function TelaMeuPerfil({ navigation }: any) {
       <ScrollView>
         <View>
           <View style={{ justifyContent: 'space-between', flexDirection: 'row', padding: 16, alignItems: 'center', backgroundColor: '#768E91' }}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={paraTelaInicial}>
               <Ionicons name='arrow-back-outline' size={32} color='white' />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -93,13 +109,13 @@ export default function TelaMeuPerfil({ navigation }: any) {
               <View style={styles.modalMenu}>
                 <TouchableOpacity style={styles.modalItem} onPress={() => {
                   setModalVisible(false);
-                  navigation.navigate('EditarPerfil'); // ajuste se necessário
+                  navigation.navigate('AlterarInformacoesPerfil');
                 }}>
                   <Text>Alterar informações do perfil</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.modalItem} onPress={() => {
                   setModalVisible(false);
-                  navigation.navigate('AlterarSenha'); // ajuste se necessário
+                  navigation.navigate('TelaRedefinirSenha');
                 }}>
                   <Text>Alterar senha</Text>
                 </TouchableOpacity>
@@ -107,25 +123,25 @@ export default function TelaMeuPerfil({ navigation }: any) {
             </TouchableOpacity>
           </Modal>
 
-          <View style={styles.menuInferior}>
-            <TouchableOpacity style={styles.item}>
-              <Ionicons name="home-outline" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
-              <Ionicons name="location-outline" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
-              <Ionicons name="add-circle-outline" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
-              <Ionicons name="bookmark-outline" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.item}>
-              <Ionicons name="person-outline" size={24} />
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
+      <View style={styles.menuInferior}>
+        <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
+          <Ionicons name="home-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item}>
+          <Ionicons name="location-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
+          <Ionicons name="add-circle-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item}>
+          <Ionicons name="bookmark-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
+          <Ionicons name="person-outline" size={24} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
