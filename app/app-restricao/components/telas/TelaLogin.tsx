@@ -1,10 +1,21 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 export default function TelaLogin() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  async function paraTelaRecuperacaoSenha() {
+    navigation.navigate("TelaRecuperacaoSenha");
+  }
+
+  async function paraTelaCadastro() {
+    navigation.navigate("TelaCadastro");
+  }
+
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const [senha, setSenha] = useState('');
 
@@ -14,10 +25,10 @@ export default function TelaLogin() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={{ 
-        backgroundColor: '#768E91', 
-        borderBottomLeftRadius: 15, 
-        borderBottomRightRadius: 15, 
+      <View style={{
+        backgroundColor: '#768E91',
+        borderBottomLeftRadius: 15,
+        borderBottomRightRadius: 15,
         paddingVertical: 40,
         paddingHorizontal: 100,
         alignItems: 'center',
@@ -60,7 +71,7 @@ export default function TelaLogin() {
 
           <Text
             style={{ color: 'black', fontSize: 18, marginTop: 10 }}
-            onPress={() => Linking.openURL('')}
+            onPress={paraTelaRecuperacaoSenha}
           >
             Esqueceu a senha?
           </Text>
@@ -76,7 +87,7 @@ export default function TelaLogin() {
 
           <Text
             style={{ color: 'black', textAlign: 'center', marginTop: 8 }}
-            onPress={() => Linking.openURL('')}
+            onPress={paraTelaCadastro}
           >
             Não tem uma conta? Crie a sua
           </Text>

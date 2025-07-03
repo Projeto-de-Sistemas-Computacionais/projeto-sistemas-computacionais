@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Keyboard,
-  Platform
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, Platform } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+
 
 export default function AlterarInformacoesPerfil() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  async function paraTelaMeuPerfil() {
+    navigation.navigate("TelaMeuPerfil");
+  }
+
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
@@ -32,6 +29,9 @@ export default function AlterarInformacoesPerfil() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
+            <TouchableOpacity onPress={paraTelaMeuPerfil}>
+              <Ionicons name="arrow-back" size={24} color={'#fff7e8'} />
+            </TouchableOpacity>
             <Text style={styles.headerText}>Alteração de informações</Text>
           </View>
 
@@ -96,7 +96,7 @@ export default function AlterarInformacoesPerfil() {
 }
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     flex: 1,
     backgroundColor: '#FFFCF5',
   },
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     color: '#FFFCF5',
     textAlign: 'center',
   },
-    formContainer: {
+  formContainer: {
     backgroundColor: '#FFFCF5',
     paddingTop: 50,
     paddingHorizontal: 16,
@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-    buttonContainer: {
+  buttonContainer: {
     paddingHorizontal: 16,
     marginBottom: 10,
   },

@@ -3,8 +3,17 @@ import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleShee
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function TelaCadastro() {
+    
+    
+  export default function TelaCadastro() {
+    const navigation = useNavigation<NavigationProp<any>>();
+
+   async function paraTelaLogin() {
+        navigation.navigate("TelaLogin");
+  }
     const [nomeCompleto, setNomeCompleto] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -157,7 +166,7 @@ export default function TelaCadastro() {
                         <TouchableOpacity style={styles.botao} onPress={handleCadastro}>
                             <Text style={styles.botaoText}>Cadastrar</Text>
                         </TouchableOpacity>
-                        <Text style={styles.texto}>
+                        <Text style={styles.texto} onPress={paraTelaLogin}>
                             Já tem uma conta? Entre na sua conta
                         </Text>
                     </View>
