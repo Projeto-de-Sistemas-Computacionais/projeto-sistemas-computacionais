@@ -30,6 +30,18 @@ public class ReceitaService {
         return receitaRepository.findAll();
     }
 
+    public List<Receita> buscarPorTitulo(String titulo){
+        return receitaRepository.findByTituloContainingIgnoreCase(titulo);
+    }
+
+    public List<Receita> buscarPorIngredientes(List<Tipo> ingredientes){
+        return receitaRepository.findByIngredientesIn(ingredientes);
+    }
+
+    public List<Receita> buscarPorCriador(Usuario usuario){
+        return receitaRepository.findByUsuarioCriador(usuario);
+    }
+
     public Receita atualizar(Long id, Receita receita){
         buscarPorId(id);
 
