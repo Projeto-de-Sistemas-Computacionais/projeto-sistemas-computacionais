@@ -1,19 +1,18 @@
 package projeto.service;
 
-import jakarta.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import lombok.extern.slf4j.Slf4j;
 import projeto.model.Endereco;
 import projeto.model.Restricao;
 import projeto.model.Usuario;
-import projeto.repository.EnderecoRepository;
 import projeto.repository.RestricaoRepository;
 import projeto.repository.UsuarioRepository;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -23,7 +22,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private EnderecoRepository enderecoRepository;
+    private EnderecoService enderecoService;
 
     @Autowired
     private RestricaoRepository restricaoRepository;
@@ -34,7 +33,7 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já cadastrado com o email informado.");
 
         Endereco endereco = usuario.getEndereco();
-        enderecoRepository.save(endereco); // salvo o endereco antes de salvar usuario, alterar para usar EnderecoService
+        enderecoService.salvar(endereco); // salvo o endereco antes de salvar usuario, alterar para usar EnderecoService
 
         List<Restricao> restricoes = usuario.getRestricoes();
         for(Restricao restricao : restricoes)
