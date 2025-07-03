@@ -1,3 +1,4 @@
+import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Dimensions, StyleSheet, FlatList, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
 

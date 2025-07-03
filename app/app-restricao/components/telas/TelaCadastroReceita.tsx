@@ -1,8 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet, ScrollView, Button, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function TelaCadastroReceita() {
+    const navigation = useNavigation<NavigationProp<any>>();
+
+    async function paraTelaListarReceitas() {
+        navigation.navigate("TelaListarReceitas");
+    }
+    async function paraTelaInicial() {
+      navigation.navigate("TelaInicial");
+    }
+
+    async function paraTelaCadastroReceita() {
+      navigation.navigate("TelaCadastroReceita");
+    }
+
+    async function paraTelaMeuPerfil() {
+      navigation.navigate("TelaMeuPerfil");
+    }
+    
     const [nomeReceita, setNomeReceita] = useState('');
     const [duracao, setDuracao] = useState('');
     const [descricao, setDescricao] = useState('');
@@ -32,7 +50,7 @@ export default function TelaCadastroReceita() {
         <View style={styles.tela}>
 
             <View style={styles.menuSup}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={paraTelaListarReceitas}>
                     <Ionicons name="arrow-back" size={24} color={'#fff7e8'}/>
                 </TouchableOpacity>
                 <Text style={styles.titulo}>Nova receita</Text>
@@ -135,24 +153,24 @@ export default function TelaCadastroReceita() {
             </ScrollView>
 
             <View style={styles.menuInferior}>
-                <TouchableOpacity>
-                    <Ionicons name="home-outline" size={24} />
+                <TouchableOpacity onPress={paraTelaInicial}>
+                    <Ionicons name="home-outline" size={24} onPress={paraTelaInicial}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity>
                     <Ionicons name="location-outline" size={24} />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
-                    <Ionicons name="add-circle-outline" size={24} />
+                <TouchableOpacity onPress={paraTelaCadastroReceita}>
+                    <Ionicons name="add-circle-outline" size={24} onPress={paraTelaCadastroReceita}/>
                 </TouchableOpacity>
 
                 <TouchableOpacity>
                     <Ionicons name="bookmark-outline" size={24} />
                 </TouchableOpacity>
 
-                <TouchableOpacity>
-                    <Ionicons name="person-outline" size={24} />
+                <TouchableOpacity onPress={paraTelaMeuPerfil}>
+                    <Ionicons name="person-outline" size={24} onPress={paraTelaMeuPerfil}/>
                 </TouchableOpacity>
             </View>
 

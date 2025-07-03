@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function TelaCadastroReceita() {
+     const navigation = useNavigation<NavigationProp<any>>();
+    
+      async function paraTelaLogin() {
+        navigation.navigate("TelaLogin");
+      }
+
     const [enderecoEmail, setEnderecoEmail] = useState('');
 
     return (
         <View style={styles.tela}>
 
             <View style={styles.menuSup}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={paraTelaLogin}>
                     <Ionicons name="arrow-back" size={24} color={'#fff7e8'} />
                 </TouchableOpacity>
                 <Text style={styles.titulo}>Redefina sua senha</Text>
