@@ -22,18 +22,18 @@ public class AvaliacaoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Avaliacao> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<Avaliacao> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token) {
         Optional<Avaliacao> avaliacao = avaliacaoService.buscarPorId(id);
         return avaliacao.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Avaliacao salvar(@RequestBody Avaliacao avaliacao) {
+    public Avaliacao salvar(@RequestBody Avaliacao avaliacao, @RequestHeader("login-token") String token) {
         return avaliacaoService.salvar(avaliacao);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Avaliacao> atualizar(@PathVariable Long id, @RequestBody Avaliacao avaliacao) {
+    public ResponseEntity<Avaliacao> atualizar(@PathVariable Long id, @RequestBody Avaliacao avaliacao, @RequestHeader("login-token") String token) {
         Optional<Avaliacao> avaliacaoExistente = avaliacaoService.buscarPorId(id);
         if (avaliacaoExistente.isPresent()) {
             Avaliacao avaliacaoAtualizada = avaliacaoService.atualizar(id, avaliacao);
@@ -43,7 +43,7 @@ public class AvaliacaoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id, @RequestHeader("login-token") String token) {
         if (!avaliacaoService.buscaPorId(id)) {
             return ResponseEntity.notFound().build();
         }
