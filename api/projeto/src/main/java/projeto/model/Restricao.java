@@ -2,13 +2,10 @@ package projeto.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.List;
 
 @Data
 @Entity
@@ -29,7 +26,7 @@ public class Restricao {
             joinColumns = @JoinColumn(name = "id_restricao"),
             inverseJoinColumns = @JoinColumn(name = "id_produto")
     )
-    private List<Produto> produtos;
+    private List<Produto> produtos = new ArrayList<>();
 
     public List<Produto> getProdutos() {
         return produtos;
@@ -50,7 +47,7 @@ public class Restricao {
     }
 
     @ManyToMany(mappedBy = "restricoes")
-    private List<Usuario> usuarios;
+    private List<Usuario> usuarios = new ArrayList<>();
 
     public List<Usuario> getUsuarios() {
         return usuarios;
@@ -71,7 +68,7 @@ public class Restricao {
     }
 
         @ManyToMany(mappedBy = "restricoes")
-    private List<Restaurante> restaurantes;
+    private List<Restaurante> restaurantes = new ArrayList<>();
 
     public List<Restaurante> getRestaurantes() {
         return restaurantes;

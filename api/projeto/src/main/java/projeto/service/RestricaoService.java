@@ -16,8 +16,8 @@ public class RestricaoService {
     @Autowired
     private RestricaoRepository restricaoRepository;
 
-    public Restricao cadastrar(Restricao resticao){
-        return restricaoRepository.save(resticao);
+    public Restricao cadastrar(Restricao restricao){
+        return restricaoRepository.save(restricao);
     }
 
     public List<Restricao> saveAll(List<Restricao> restricoes){
@@ -25,8 +25,8 @@ public class RestricaoService {
     }
 
     public Restricao buscarPorId(Long id){
-        return restricaoRepository.findById(id) // busca usuario pelo ID no banco
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Restrição com id %s não encontrada", id))); // caso não tenha um usuário com este ID, lança uma exception
+        return restricaoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Restrição com id %s não encontrada", id)));
     }
 
     public List<Restricao> buscarTodos(){
@@ -35,7 +35,7 @@ public class RestricaoService {
 
 
     public Restricao atualizar(Long id, Restricao restricao){
-      //  Restricao antigaRestricao = buscarPorId(id);
+        Restricao restricaoAntiga = buscarPorId(id);
         restricao.setId(id);
         return restricaoRepository.save(restricao);
     }

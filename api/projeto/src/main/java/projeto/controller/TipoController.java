@@ -31,12 +31,14 @@ public class TipoController {
 	@PostMapping
 	public ResponseEntity<Tipo> cadastrar(@RequestBody Tipo tipo, @RequestHeader("login-token") String token) {
 		Tipo response = tipoService.cadastrar(tipo);
+		sessionService.getSessionByToken(token);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@GetMapping("{id}")
 	public ResponseEntity<Tipo> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token) {
 		sessionService.getSessionByToken(token);
+
 		Tipo response = tipoService.buscarPorId(id);
 		return ResponseEntity.ok(response);
 	}
@@ -44,6 +46,7 @@ public class TipoController {
 	@GetMapping
 	public ResponseEntity<List<Tipo>> buscarTodos(@RequestHeader("login-token") String token) {
 		sessionService.getSessionByToken(token);
+
 		List<Tipo> response = tipoService.buscarTodos();
 		return ResponseEntity.ok(response);
 	}
@@ -52,6 +55,7 @@ public class TipoController {
 	public ResponseEntity<Tipo> atualizar(@PathVariable Long id, @RequestBody Tipo tipo,
 			@RequestHeader("login-token") String token) {
 		sessionService.getSessionByToken(token);
+
 		Tipo response = tipoService.atualizar(id, tipo);
 		return ResponseEntity.ok(response);
 	}
@@ -59,6 +63,7 @@ public class TipoController {
 	@DeleteMapping("{id}")
 	public ResponseEntity<Void> deletar(@PathVariable Long id, @RequestHeader("login-token") String token) {
 		sessionService.getSessionByToken(token);
+
 		tipoService.deletar(id);
 		return ResponseEntity.noContent().build();
 	}

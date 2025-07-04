@@ -1,16 +1,8 @@
 import React from "react";
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  FlatList,
-  Dimensions,
-} from "react-native";
+import {View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Dimensions} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MenuInferior from "../ui/MenuInferior";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 const categorias = [
   { id: "1", nome: "Categoria" },
@@ -33,6 +25,28 @@ const restaurantes = [
 const { width } = Dimensions.get("window");
 
 export default function TelaInicial() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  async function paraDetalhamentoReceita() {
+    navigation.navigate("DetalhamentoReceita");
+  }
+
+  async function paraDetalhamentoRestaurante() {
+    navigation.navigate("DetalhamentoRestaurante");
+  }
+
+  async function paraTelaLogin() {
+    navigation.navigate("TelaLogin");
+  }
+
+  async function paraTelaListarReceitas() {
+    navigation.navigate("TelaListarReceitas");
+  }
+
+  async function paraTelaListagemRestaurantes() {
+    navigation.navigate("TelaListagemRestaurantes");
+  }
+
   const renderCard = (item) => (
     <TouchableOpacity key={item.id} style={styles.card}>
       <View style={styles.cardTop}>
@@ -82,10 +96,7 @@ export default function TelaInicial() {
                   <Text style={styles.bemVindoTexto}>Seja bem vindo!</Text>
                 </View>
               </View>
-              <TouchableOpacity
-                onPress={() => {
-                }}
-              >
+              <TouchableOpacity onPress={paraTelaLogin}>
                 <Ionicons name="exit-outline" size={28} color="white" />
               </TouchableOpacity>
             </View>
@@ -116,11 +127,7 @@ export default function TelaInicial() {
 
           <View style={styles.headerSecao}>
             <Text style={styles.tituloSecao}>Receitas Recomendadas</Text>
-            <TouchableOpacity
-              onPress={() => {
-                /* sua função aqui */
-              }}
-            >
+            <TouchableOpacity onPress={paraTelaListarReceitas}>
               <Text style={styles.verTodas}>Ver todas</Text>
             </TouchableOpacity>
           </View>
@@ -134,11 +141,7 @@ export default function TelaInicial() {
 
           <View style={styles.headerSecao}>
             <Text style={styles.tituloSecao}>Restaurantes Recomendados</Text>
-            <TouchableOpacity
-              onPress={() => {
-                /* sua função aqui */
-              }}
-            >
+            <TouchableOpacity onPress={paraTelaListagemRestaurantes}>
               <Text style={styles.verTodas}>Ver todos</Text>
             </TouchableOpacity>
           </View>
@@ -154,6 +157,7 @@ export default function TelaInicial() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   topoVerde: {

@@ -16,36 +16,40 @@ public class RestricaoController {
     RestricaoService restricaoService;
 
     @PostMapping
-    public ResponseEntity<Restricao> cadastrar(@RequestParam("restricao") Restricao restricao){
+    public ResponseEntity<Restricao> cadastrar(@RequestBody("restricao") Restricao restricao, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.cadastrar(restricao));
     }
 
 //    @PostMapping
-//    public ResponseEntity<List<Restricao>> saveAll(@RequestParam("restricao") List<Restricao> restricoes){
+//    public ResponseEntity<List<Restricao>> saveAll(@RequestBody("restricao") List<Restricao> restricoes){
 //        return ResponseEntity.ok(restricaoService.saveAll(restricoes));
 //    }
 
     @GetMapping
-    public ResponseEntity<List<Restricao>> buscarTodos(){
+    public ResponseEntity<List<Restricao>> buscarTodos(@RequestHeader("login-token") String token){
+
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.buscarTodos());
+
     }
 
-    @GetMapping("{id}")
-    @ResponseBody
-    public ResponseEntity<Restricao> BuscarPorId(@PathVariable("id") Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<Restricao> BuscarPorId(@PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.buscarPorId(id));
     }
 
 
-    @PutMapping("{id}")
-    @ResponseBody
-    public ResponseEntity<Restricao> atualizar(@RequestParam("restricao") Restricao restricao, @PathVariable("id") Long id){
+    @PutMapping("/{id}")
+    public ResponseEntity<Restricao> atualizar(@RequestBody("restricao") Restricao restricao, @PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.atualizar(id, restricao));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseBody
-    public ResponseEntity<Void> deletar(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deletar(@PathVariable("id") Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
         restricaoService.deletar(id);
         return ResponseEntity.noContent().build();
     }

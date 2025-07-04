@@ -1,5 +1,7 @@
+import React from "react";
 import { View, Text, TextInput, TouchableOpacity, Dimensions, StyleSheet, FlatList, Image, Button } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
@@ -11,114 +13,147 @@ interface Receita {
 }
 
 const receitas = [
-    {id: '1', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '2', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-        {id: '3', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '4', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '5', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '6', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '7', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30},
-    {id: '8', 
-        titulo: 'Título da receita', 
-        restricoes: 'Restrição', 
-        tempo: 30}
+  {
+    id: '1',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '2',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '3',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '4',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '5',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '6',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '7',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  },
+  {
+    id: '8',
+    titulo: 'Título da receita',
+    restricoes: 'Restrição',
+    tempo: 30
+  }
 ]
 
 export default function TelaListarReceitas() {
+  const navigation = useNavigation<NavigationProp<any>>();
 
-    const renderItem = ({ item }: { item: Receita }) => (
-        <TouchableOpacity>
-            <View style={styles.receitaCard}>
-                <Image source={require('assets/images/image-icon.jpg')} style={styles.receitaImagem}/>
-                <View style={styles.receitaInfo}>
-                    <Text style={styles.receitaNome}>{item.titulo}</Text>
-                    <Text style={styles.restricoes} numberOfLines={1}>{item.restricoes}</Text>
-                </View>
-                <View style={styles.notaContainer}>
-                    <Ionicons name="time-outline" size={ 20 }/>
-                    <Text>{item.tempo}min</Text>
-                </View>
-            </View>
-        </TouchableOpacity>
-    )
+  async function paraTelaInicial() {
+    navigation.navigate("TelaInicial");
+  }
 
-    return (
-        <View style={styles.container}>
-        
-            <View style={styles.header}>
-                <TouchableOpacity>
-                    <Ionicons name="arrow-back" size={24} />
-                </TouchableOpacity>
-                <Text style={styles.headerText}>Receitas</Text>
-            </View>
+  async function paraTelaCadastroReceita() {
+    navigation.navigate("TelaCadastroReceita");
+  }
 
-            <View style={{ gap: 12 }}>
+  async function paraTelaMeuPerfil() {
+    navigation.navigate("TelaMeuPerfil");
+  }
 
-                <View style={styles.searchContainer}>
-                    <Ionicons name="search" size={ 20 }/>
-                    <TextInput placeholder='Pesquisar' style={styles.searchInput}></TextInput>
-                </View>
-                
-                <TouchableOpacity style={styles.filterButton}>
-                    <Ionicons name="funnel" size={ 20 }/>
-                    <Text style={{ color: '#555555' }}>Filtros</Text>
-                </TouchableOpacity>
-            </View>
+  async function paraDetalhamentoReceita() {
+    navigation.navigate("DetalhamentoReceita");
+  }
 
-            <View style={styles.divider}/>
-
-            <FlatList data={receitas} 
-            renderItem={renderItem} 
-            keyExtractor={item => item.id} 
-            contentContainerStyle={{ paddingBottom: 30 }} />
-
-            <View>
-                <TouchableOpacity style={styles.botaoCriarNova}>
-                    <Ionicons name="add" size={20} color="#fff" />
-                    <Text style={styles.botaoCriarNovaTexto}>Criar nova</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.menuInferior}>
-                <TouchableOpacity style={styles.item}>
-                    <Ionicons name="home-outline" size={24}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Ionicons name="location-outline" size={24}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Ionicons name="add-circle-outline" size={24}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Ionicons name="bookmark-outline" size={24}/>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.item}>
-                    <Ionicons name="person-outline" size={24}/>
-                </TouchableOpacity>
-            </View>
+  const renderItem = ({ item }: { item: Receita }) => (
+    <TouchableOpacity onPress={paraDetalhamentoReceita}>
+      <View style={styles.receitaCard}>
+        <Image source={require('../../assets/images/image-icon.jpg')} style={styles.receitaImagem} />
+        <View style={styles.receitaInfo}>
+          <Text style={styles.receitaNome}>{item.titulo}</Text>
+          <Text style={styles.restricoes} numberOfLines={1}>{item.restricoes}</Text>
         </View>
-    )
+        <View style={styles.notaContainer}>
+          <Ionicons name="time-outline" size={20} />
+          <Text>{item.tempo}min</Text>
+        </View>
+      </View>
+    </TouchableOpacity>
+  )
+
+  return (
+    <View style={styles.container}>
+
+      <View style={styles.header}>
+        <TouchableOpacity onPress={paraTelaInicial}>
+          <Ionicons name="arrow-back" size={24} />
+        </TouchableOpacity>
+        <Text style={styles.headerText}>Receitas</Text>
+      </View>
+
+      <View style={{ gap: 12 }}>
+
+        <View style={styles.searchContainer}>
+          <Ionicons name="search" size={20} />
+          <TextInput placeholder='Pesquisar' style={styles.searchInput}></TextInput>
+        </View>
+
+        <TouchableOpacity style={styles.filterButton}>
+          <Ionicons name="funnel" size={20} />
+          <Text style={{ color: '#555555' }}>Filtros</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.divider} />
+
+      <FlatList data={receitas}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={{ paddingBottom: 30 }} />
+
+      <View>
+        <TouchableOpacity style={styles.botaoCriarNova} onPress={paraTelaCadastroReceita}>
+          <Ionicons name="add" size={20} color="#fff" />
+          <Text style={styles.botaoCriarNovaTexto}>Criar nova</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.menuInferior}>
+        <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
+          <Ionicons name="home-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item}>
+          <Ionicons name="location-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
+          <Ionicons name="add-circle-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item}>
+          <Ionicons name="bookmark-outline" size={24} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
+          <Ionicons name="person-outline" size={24} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
