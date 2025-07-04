@@ -6,14 +6,12 @@ import axios from 'axios';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 
 export default function TelaCadastro() {
-    
-    
-  export default function TelaCadastro() {
     const navigation = useNavigation<NavigationProp<any>>();
 
-   async function paraTelaLogin() {
+    async function paraTelaLogin() {
         navigation.navigate("TelaLogin");
-  }
+    }
+
     const [nomeCompleto, setNomeCompleto] = useState('');
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
@@ -23,16 +21,20 @@ export default function TelaCadastro() {
     const [tipoConta, setTipoConta] = useState('Pessoa física');
 
     const endereco = {
-        rua: "Av. Copacabana",
-        numero: "100",
-        cidade: "Sapucaia do Sul",
-        estado: "RS",
-        cep: "93216-120"
+        rua: "Rua das Acácias",
+        numero: "123",
+        bairro: "Jardim Primavera",
+        cidade: "São Paulo",
+        estado: "SP",
+        cep: "01234-567",
+        complemento: "Apartamento 201",
+        latitude: -23.55052,
+        longitude: -46.63331
     };
 
-    const restricoes = [
-        { descricao: "Sem lactose" }
-    ];
+    const restricoes = [{
+        nome: "Acesso restrito a cadeirantes"
+    }];
 
     const alternarVisibilidadeSenha = () => {
         setSenhaVisivel(!senhaVisivel);
@@ -75,7 +77,7 @@ export default function TelaCadastro() {
 
             if (response.status === 201) {
                 Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
-                // redirecionamento para login
+                navigation.navigate("TelaLogin");
             }
         } catch (error) {
             if (error.response && error.response.status === 400) {
