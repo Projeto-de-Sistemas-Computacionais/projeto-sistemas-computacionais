@@ -42,38 +42,4 @@ public class Restaurante {
 
     @OneToMany(mappedBy="restaurante")
     private List<Avaliacao> avaliacoes;
-
-    public List<Restricao> getRestricoes() {
-        return restricoes;
-    }
-
-    public void setRestricoes(List<Restricao> restricoes) {
-        this.restricoes = restricoes;
-    }
-
-    public void addRestricao(Restricao restricao) {
-        restricoes.add(restricao);
-        restricao.getRestaurantes().add(this);
-    }
- 
-    public void removeRestricao(Restricao restricao) {
-        restricoes.remove(restricao);
-        restricao.getRestaurantes().remove(this);
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void addEndereco(Endereco endereco) {
-        if(getEndereco() != null) {
-        this.getEndereco().setRestaurante(null);
-        }
-        this.setEndereco(endereco);
-        endereco.setRestaurante(this);
-    }
 }

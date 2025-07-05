@@ -2,8 +2,10 @@ package projeto.service;
 
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import projeto.model.Endereco;
@@ -12,6 +14,8 @@ import projeto.model.Produto;
 import projeto.repository.FabricanteRepository;
 import projeto.repository.ProdutoRepository;
 
+@Slf4j
+@Service
 public class FabricanteService {
 	@Autowired
     private FabricanteRepository fabricanteRepository;
@@ -29,10 +33,6 @@ public class FabricanteService {
 
         Endereco endereco = fabricante.getEndereco();
         enderecoService.salvar(endereco); // salvo o endereco antes de salvar o fabricante, alterar para usar EnderecoService
-
-        List<Produto> produtos = fabricante.getProdutos();
-        for(Produto produto : produtos)
-        	produtoService.cadastrar(produto); // salva produtos no banco
 
         return fabricanteRepository.save(fabricante); // salva o fabricante no banco
     }

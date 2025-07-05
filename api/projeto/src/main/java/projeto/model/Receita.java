@@ -46,48 +46,4 @@ public class Receita {
     )
     @Column(name = "imagem")
     private List<String> imagens = new ArrayList<>();
-
-    public List<Tipo> getIngredientes() {
-        return ingredientes;
-    }
-
-    public void setIngredientes(List<Tipo> ingredientes) {
-        this.ingredientes = ingredientes;
-    }
-
-    public void addTipo(Tipo tipo) {
-        ingredientes.add(tipo);
-        tipo.getReceitas().add(this);
-    }
- 
-    public void removeTipo(Tipo tipo) {
-        ingredientes.remove(tipo);
-        tipo.getReceitas().remove(this);
-    }
-
-    public Usuario getUsuarioCriador() {
-        return usuarioCriador;
-    }
-
-    public void setUsuarioCriador(Usuario usuarioCriador) {
-        this.usuarioCriador = usuarioCriador;
-    }
-
-    public List<Usuario> getUsuariosFavoritados() {
-        return usuariosFavoritados;
-    }
-
-    public void setUsuariosFavoritados(List<Usuario> usuariosFavoritados) {
-        this.usuariosFavoritados = usuariosFavoritados;
-    }
-
-    public void addUsuarioFavoritado(Usuario usuario) {
-        usuariosFavoritados.add(usuario);
-        usuario.getReceitasFavoritadas().add(this);
-    }
- 
-    public void removeUsuarioFavoritado(Usuario usuario) {
-        usuariosFavoritados.remove(usuario);
-        usuario.getReceitasFavoritadas().remove(this);
-    }
 }

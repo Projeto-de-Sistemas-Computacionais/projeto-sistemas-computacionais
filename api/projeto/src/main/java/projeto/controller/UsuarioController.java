@@ -15,6 +15,7 @@ import projeto.service.UsuarioService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
@@ -24,7 +25,7 @@ public class UsuarioController {
 
     @Autowired
     private SessionService sessionService;
-
+    
     @PostMapping
     public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario){
         Usuario response = usuarioService.cadastrar(usuario);
@@ -82,6 +83,7 @@ public class UsuarioController {
 
             return ResponseEntity.ok()
                     .headers(responseHeaders)
+                    .header("Access-Control-Expose-Headers", "login-token")
                     .body("Usuário logado.");
     }
 

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import projeto.model.Restricao;
 import projeto.service.RestricaoService;
+import projeto.service.SessionService;
 
 import java.util.List;
 
@@ -15,8 +16,11 @@ public class RestricaoController {
     @Autowired
     RestricaoService restricaoService;
 
+    @Autowired
+    SessionService sessionService;
+
     @PostMapping
-    public ResponseEntity<Restricao> cadastrar(@RequestBody("restricao") Restricao restricao, @RequestHeader("login-token") String token){
+    public ResponseEntity<Restricao> cadastrar(@RequestBody Restricao restricao, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.cadastrar(restricao));
     }
@@ -42,7 +46,7 @@ public class RestricaoController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restricao> atualizar(@RequestBody("restricao") Restricao restricao, @PathVariable("id") Long id, @RequestHeader("login-token") String token){
+    public ResponseEntity<Restricao> atualizar(@RequestBody Restricao restricao, @PathVariable("id") Long id, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
         return ResponseEntity.ok(restricaoService.atualizar(id, restricao));
     }
