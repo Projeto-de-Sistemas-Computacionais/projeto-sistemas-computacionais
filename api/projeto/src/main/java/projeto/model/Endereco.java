@@ -32,10 +32,4 @@ public class Endereco {
     private Double latitude;
 
     private Double longitude;
-
-    @OneToOne(mappedBy = "endereco", optional=true)
-    private Restaurante restaurante;
-
-    @OneToOne(mappedBy = "endereco", optional=true)
-    private Usuario usuario;
 }
