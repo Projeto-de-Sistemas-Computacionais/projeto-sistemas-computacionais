@@ -1,9 +1,13 @@
 package projeto.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import projeto.model.Avaliacao;
+import projeto.repository.AvaliacaoRepository;
+
 import java.util.List;
-import java.util.ArrayList;
 
 @Service
 public class AvaliacaoService {
@@ -17,6 +21,10 @@ public class AvaliacaoService {
 
     public Avaliacao buscaPorId(Long id) {
         return avaliacaoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        String.format("Avaliação com id %s não encontrada", id)
+                ));
     }
 
     public Avaliacao salvar(Avaliacao avaliacao) {
@@ -24,18 +32,15 @@ public class AvaliacaoService {
     }
 
     public Avaliacao atualizar(Long id, Avaliacao avaliacao) {
-        Avaliacao avaliacaoExistente = avaliacaoRepository.findById(id);
-        if (avaliacaoExistente != null) {
-            avaliacao.setId(id);
-            return avaliacaoRepository.save(avaliacao); 
-        }
-        return null;
+        // Verifica existência e lança exceção se não existir
+        buscaPorId(id);
+
+        avaliacao.setId(id);
+        return avaliacaoRepository.save(avaliacao);
     }
 
     public void deletar(Long id) {
-        Avaliacao avaliacao = avaliacaoRepository.findById(id);
-        if (avaliacao != null) {
-            avaliacaoRepository.delete(avaliacao);
-        }
+        Avaliacao avaliacao = buscaPorId(id); // lança exceção se não encontrar
+        avaliacaoRepository.delete(avaliacao);
     }
 }

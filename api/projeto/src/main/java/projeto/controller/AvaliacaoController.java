@@ -7,7 +7,6 @@ import projeto.model.Avaliacao;
 import projeto.service.AvaliacaoService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/avaliacao")
@@ -17,36 +16,31 @@ public class AvaliacaoController {
     private AvaliacaoService avaliacaoService;
 
     @GetMapping
-    public List<Avaliacao> buscarTodos() {
-        return avaliacaoService.buscarTodos();
+    public ResponseEntity<List<Avaliacao>> buscarTodos() {
+        List<Avaliacao> avaliacoes = avaliacaoService.buscaTodos();
+        return ResponseEntity.ok(avaliacoes);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Avaliacao> buscarPorId(@PathVariable Long id) {
-        Optional<Avaliacao> avaliacao = avaliacaoService.buscarPorId(id);
-        return avaliacao.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        Avaliacao avaliacao = avaliacaoService.buscaPorId(id);
+        return ResponseEntity.ok(avaliacao);
     }
 
     @PostMapping
-    public Avaliacao salvar(@RequestBody Avaliacao avaliacao) {
-        return avaliacaoService.salvar(avaliacao);
+    public ResponseEntity<Avaliacao> salvar(@RequestBody Avaliacao avaliacao) {
+        Avaliacao novaAvaliacao = avaliacaoService.salvar(avaliacao);
+        return ResponseEntity.status(201).body(novaAvaliacao);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Avaliacao> atualizar(@PathVariable Long id, @RequestBody Avaliacao avaliacao) {
-        Optional<Avaliacao> avaliacaoExistente = avaliacaoService.buscarPorId(id);
-        if (avaliacaoExistente.isPresent()) {
-            Avaliacao avaliacaoAtualizada = avaliacaoService.atualizar(id, avaliacao);
-            return ResponseEntity.ok(avaliacaoAtualizada);
-        }
-        return ResponseEntity.notFound().build();
+        Avaliacao atualizada = avaliacaoService.atualizar(id, avaliacao);
+        return ResponseEntity.ok(atualizada);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        if (!avaliacaoService.buscaPorId(id)) {
-            return ResponseEntity.notFound().build();
-        }
         avaliacaoService.deletar(id);
         return ResponseEntity.noContent().build();
     }

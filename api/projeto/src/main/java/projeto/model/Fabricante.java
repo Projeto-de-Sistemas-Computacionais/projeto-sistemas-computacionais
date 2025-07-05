@@ -24,7 +24,4 @@ public class Fabricante {
     @OneToOne
     @JoinColumn(name = "id_endereco")
 	private Endereco endereco;
-
-    @OneToMany(mappedBy="fabricante")
-    private List<Produto> produtos;
 }
