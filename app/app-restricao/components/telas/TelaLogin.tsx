@@ -94,6 +94,8 @@ export default function TelaLogin() {
             style={[styles.input]}
             placeholder='email@dominio.com'
             placeholderTextColor='black'
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Text style={[styles.label, { marginTop: 20 }]}>Senha:</Text>
