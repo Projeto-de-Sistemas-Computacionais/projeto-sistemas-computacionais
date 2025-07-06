@@ -32,49 +32,4 @@ public class Endereco {
     private Double latitude;
 
     private Double longitude;
-
-    @OneToOne(mappedBy = "endereco", optional=true)
-    private Restaurante restaurante;
-
-    @OneToOne(mappedBy = "endereco", optional=true)
-    private Usuario usuario;
-
-    public Restaurante getRestaurante() {
-        return restaurante;
-    }
-
-    public void setRestaurante(Restaurante restaurante) {
-        this.restaurante = restaurante;
-    }
-
-    public void addRestaurante(Restaurante restaurante) {
-        if(getRestaurante() != null) {
-        this.getRestaurante().setEndereco(null);
-        }
-        this.setRestaurante(restaurante);
-        restaurante.setEndereco(this);
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void addUsuario(Usuario usuario) {
-        if(getUsuario() != null) {
-        this.getUsuario().setEndereco(null);
-        }
-        this.setUsuario(usuario);
-        usuario.setEndereco(this);
-    }
-
-    public void removeUsuario() {
-        if(getUsuario() != null) {
-        this.getUsuario().setEndereco(null);
-        }
-        this.setUsuario(null);
-    }
 }

@@ -1,9 +1,19 @@
-import React from "react";
-import {View, Text, ScrollView, StyleSheet, TouchableOpacity, TextInput, FlatList, Dimensions} from "react-native";
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  TextInput,
+  FlatList,
+  Dimensions,
+} from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MenuInferior from "../ui/MenuInferior";
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 const categorias = [
   { id: "1", nome: "Categoria" },
   { id: "2", nome: "Categoria" },
@@ -25,17 +35,41 @@ const restaurantes = [
 const { width } = Dimensions.get("window");
 
 export default function TelaInicial() {
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchToken = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (!token && isMounted) {
+          paraTelaLogin();
+        }
+      } catch (error) {
+        console.error("Erro ao buscar token:", error);
+        if (isMounted) {
+          paraTelaLogin();
+        }
+      }
+    };
+
+    fetchToken();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const navigation = useNavigation<NavigationProp<any>>();
 
-  async function paraDetalhamentoReceita() {
+  function paraDetalhamentoReceita() {
     navigation.navigate("DetalhamentoReceita");
   }
 
-  async function paraDetalhamentoRestaurante() {
+  function paraDetalhamentoRestaurante() {
     navigation.navigate("DetalhamentoRestaurante");
   }
 
-  async function paraTelaLogin() {
+  function paraTelaLogin() {
     navigation.navigate("TelaLogin");
   }
 
@@ -47,15 +81,34 @@ export default function TelaInicial() {
     navigation.navigate("TelaListagemRestaurantes");
   }
 
+  const realizarLogout = async () => {
+    const token = await AsyncStorage.getItem("authToken");
+
+    if (token) {
+      await axios.post(
+        "http://localhost:8080/usuarios/logout",
+        {},
+        {
+          headers: {
+            "Login-Token": token,
+          },
+        }
+      );
+    }
+
+    await AsyncStorage.clear();
+    navigation.navigate("TelaLogin");
+  };
+
   const renderCard = (item) => (
     <TouchableOpacity key={item.id} style={styles.card}>
       <View style={styles.cardTop}>
         <View style={styles.avaliacao}>
-          <Ionicons name="star" size={14} color="white" />
+          <Ionicons name='star' size={14} color='white' />
           <Text style={styles.avaliacaoTexto}>5,0 av.</Text>
         </View>
         <View style={styles.flag}>
-          <Ionicons name="bookmark-outline" size={20} color="black" />
+          <Ionicons name='bookmark-outline' size={20} color='black' />
         </View>
       </View>
 
@@ -69,9 +122,9 @@ export default function TelaInicial() {
   const renderCategoria = ({ item }) => (
     <View style={styles.categoriaItem}>
       <Ionicons
-        name="star"
+        name='star'
         size={15}
-        color="black"
+        color='black'
         style={{ marginRight: 8 }}
       />
       <Text style={styles.categoriaTexto}>{item.nome}</Text>
@@ -79,85 +132,80 @@ export default function TelaInicial() {
   );
 
   return (
-    <View style={{height: "100%" }}>
-        <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
-          <View style={styles.topoVerde}>
-            <View style={styles.headerUser}>
-              <View
-                style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
-              >
-                <Ionicons
-                  name="person-circle-outline"
-                  size={48}
-                  color="white"
-                />
-                <View style={styles.boasVindas}>
-                  <Text style={styles.olaTexto}>Olá, fulano</Text>
-                  <Text style={styles.bemVindoTexto}>Seja bem vindo!</Text>
-                </View>
+    <View style={{ height: "100%" }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 120 }}>
+        <View style={styles.topoVerde}>
+          <View style={styles.headerUser}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", flex: 1 }}
+            >
+              <Ionicons name='person-circle-outline' size={48} color='white' />
+              <View style={styles.boasVindas}>
+                <Text style={styles.olaTexto}>Olá, fulano</Text>
+                <Text style={styles.bemVindoTexto}>Seja bem vindo!</Text>
               </View>
-              <TouchableOpacity onPress={paraTelaLogin}>
-                <Ionicons name="exit-outline" size={28} color="white" />
-              </TouchableOpacity>
             </View>
-
-            <View style={styles.inputWrapper}>
-              <Ionicons
-                name="search-outline"
-                size={20}
-                color="white"
-                style={styles.searchIcon}
-              />
-              <TextInput
-                placeholder="Pesquisar"
-                placeholderTextColor="white"
-                style={styles.campoBusca}
-              />
-            </View>
-          </View>
-
-          <Text style={styles.tituloSecao}>Categorias</Text>
-          <FlatList
-            horizontal
-            data={categorias}
-            renderItem={renderCategoria}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listaHorizontal}
-          />
-
-          <View style={styles.headerSecao}>
-            <Text style={styles.tituloSecao}>Receitas Recomendadas</Text>
-            <TouchableOpacity onPress={paraTelaListarReceitas}>
-              <Text style={styles.verTodas}>Ver todas</Text>
+            <TouchableOpacity onPress={realizarLogout}>
+              <Ionicons name='exit-outline' size={28} color='white' />
             </TouchableOpacity>
           </View>
-          <FlatList
-            horizontal
-            data={receitas}
-            renderItem={({ item }) => renderCard(item)}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listaHorizontal}
-          />
 
-          <View style={styles.headerSecao}>
-            <Text style={styles.tituloSecao}>Restaurantes Recomendados</Text>
-            <TouchableOpacity onPress={paraTelaListagemRestaurantes}>
-              <Text style={styles.verTodas}>Ver todos</Text>
-            </TouchableOpacity>
+          <View style={styles.inputWrapper}>
+            <Ionicons
+              name='search-outline'
+              size={20}
+              color='white'
+              style={styles.searchIcon}
+            />
+            <TextInput
+              placeholder='Pesquisar'
+              placeholderTextColor='white'
+              style={styles.campoBusca}
+            />
           </View>
-          <FlatList
-            horizontal
-            data={restaurantes}
-            renderItem={({ item }) => renderCard(item)}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={styles.listaHorizontal}
-          />
-        </ScrollView>
-        <MenuInferior />
+        </View>
+
+        <Text style={styles.tituloSecao}>Categorias</Text>
+        <FlatList
+          horizontal
+          data={categorias}
+          renderItem={renderCategoria}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listaHorizontal}
+        />
+
+        <View style={styles.headerSecao}>
+          <Text style={styles.tituloSecao}>Receitas Recomendadas</Text>
+          <TouchableOpacity onPress={paraTelaListarReceitas}>
+            <Text style={styles.verTodas}>Ver todas</Text>
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          horizontal
+          data={receitas}
+          renderItem={({ item }) => renderCard(item)}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listaHorizontal}
+        />
+
+        <View style={styles.headerSecao}>
+          <Text style={styles.tituloSecao}>Restaurantes Recomendados</Text>
+          <TouchableOpacity onPress={paraTelaListagemRestaurantes}>
+            <Text style={styles.verTodas}>Ver todos</Text>
+          </TouchableOpacity>
+        </View>
+        <FlatList
+          horizontal
+          data={restaurantes}
+          renderItem={({ item }) => renderCard(item)}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listaHorizontal}
+        />
+      </ScrollView>
+      <MenuInferior />
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   topoVerde: {

@@ -18,11 +18,20 @@ public class Produto {
 
     private String descricao;
 
-    @ManyToMany(mappedBy = "produtos")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "produto_restricao",
+            joinColumns = @JoinColumn(name = "id_produto"),
+            inverseJoinColumns = @JoinColumn(name = "id_restricao")
+    )
     private List<Restricao> restricoes;
 
     @OneToMany(mappedBy="produto")
     private List<Avaliacao> avaliacoes;
+
+    @ManyToOne
+    @JoinColumn(name="fabricante_id")
+    private Fabricante fabricante;
 
     @ManyToOne
     @JoinColumn(name="id_tipo")
@@ -38,32 +47,4 @@ public class Produto {
 
 
     private String tabelaNutricional;
-
-
-
-    public List<Restricao> getRestricoes() {
-        return restricoes;
-    }   
-    
-    public void setRestricoes(List<Restricao> restricoes) {
-        this.restricoes = restricoes;
-    }
-
-    public void addRestricao(Restricao restricao) {
-        restricoes.add(restricao);
-        restricao.getProdutos().add(this);
-    }
- 
-    public void removeRestricao(Restricao restricao) {
-        restricoes.remove(restricao);
-        restricao.getProdutos().remove(this);
-    }
-
-    public Tipo getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Tipo tipo) {
-        this.tipo = tipo;
-    }
 }
