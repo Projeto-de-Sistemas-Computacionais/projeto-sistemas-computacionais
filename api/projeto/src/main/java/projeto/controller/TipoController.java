@@ -30,8 +30,8 @@ public class TipoController {
 
 	@PostMapping
 	public ResponseEntity<Tipo> cadastrar(@RequestBody Tipo tipo, @RequestHeader("login-token") String token) {
-		Tipo response = tipoService.cadastrar(tipo);
 		sessionService.getSessionByToken(token);
+		Tipo response = tipoService.cadastrar(tipo);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
