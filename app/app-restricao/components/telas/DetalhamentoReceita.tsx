@@ -1,13 +1,56 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MenuInferior from '../ui/MenuInferior';
-import { Colors } from '../../constants/Colors';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  Dimensions,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import MenuInferior from "../ui/MenuInferior";
+import { Colors } from "../../constants/Colors";
+import {
+  useNavigation,
+  NavigationProp,
+  useRoute,
+  RouteProp,
+} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function DetalhamentoReceita() {
+  const route = useRoute<RouteProp<any>>();
   const navigation = useNavigation<NavigationProp<any>>();
+  const [receita, setReceita] = useState(null);
+  const { id } = route.params;
+
+  useEffect(() => {
+    const consultarReceita = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (!token) {
+          console.warn("Token não encontrado");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/receitas/${id}`,
+          {
+            headers: { "Login-Token": token },
+          }
+        );
+
+        setReceita(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    consultarReceita();
+  }, []);
 
   async function paraTelaInicial() {
     navigation.navigate("TelaInicial");
@@ -17,7 +60,7 @@ export default function DetalhamentoReceita() {
     navigation.navigate("TelaListarReceitas");
   }
 
-  const { width } = Dimensions.get('window');
+  const { width } = Dimensions.get("window");
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -26,60 +69,71 @@ export default function DetalhamentoReceita() {
           <View style={styles.header}>
             <View style={styles.headerIcons}>
               <TouchableOpacity onPress={paraTelaListarReceitas}>
-                <Ionicons name="arrow-back-outline" size={32} color="white" />
+                <Ionicons name='arrow-back-outline' size={32} color='white' />
               </TouchableOpacity>
               <TouchableOpacity>
-                <Ionicons name="bookmark" size={32} color="white" />
+                <Ionicons name='bookmark' size={32} color='white' />
               </TouchableOpacity>
             </View>
-            <Text style={styles.restaurantName}>Nome da receita</Text>
+            <Text style={styles.restaurantName}>{receita?.titulo}</Text>
           </View>
 
           <View style={styles.avaliacoes}>
             <View style={styles.starsRow}>
               {[...Array(5)].map((_) => (
-                <Ionicons name="star-outline" size={25} />
+                <Ionicons name='star-outline' size={25} />
               ))}
-              <Text style={styles.avaliacoesTexto}>0 Avaliações</Text>
+              <Text style={styles.avaliacoesTexto}>
+                {receita?.avaliacoes?.length ?? 0}
+              </Text>
             </View>
 
             <View style={styles.starsRow}>
-              <Ionicons name="play" size={25} />
-              <Text style={styles.avaliacoesTexto}>30 min</Text>
+              <Ionicons name='play' size={25} />
+              <Text style={styles.avaliacoesTexto}>
+                {receita?.tempoPreparo} minutos de preparo
+              </Text>
             </View>
 
             <View style={styles.restricaoItem}>
-              <Text style={styles.restricaoTexto}>publicado por nomeExemplo</Text>
+              <Text style={styles.restricaoTexto}>
+                publicado por {receita?.usuarioCriador?.nomeCompleto}
+              </Text>
             </View>
 
             <View style={styles.restricoesContainer}>
-              <View style={styles.restricaoItem}>
-                <Ionicons name="checkmark-outline" size={25} />
-                <Text style={styles.restricaoTexto}>Restrição que abrange</Text>
-              </View>
-              <View style={styles.restricaoItem}>
-                <Ionicons name="checkmark-outline" size={25} />
-                <Text style={styles.restricaoTexto}>Restrição que abrange</Text>
-              </View>
+              {receita?.restricoes?.map((restricao) => (
+                <View style={styles.restricaoItem} key={restricao?.id}>
+                  <Ionicons name='checkmark-outline' size={25} />
+                  <Text style={styles.restricaoTexto}>
+                    {restricao.nome + " - " + restricao.descricao}
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
 
           <View>
             <Text style={styles.secaoTitulo}>DESCRIÇÃO</Text>
-            <Text style={styles.descricaoReceitaTexto}>Descrição do autor</Text>
+            <Text style={styles.descricaoReceitaTexto}>
+              {receita?.descricao}
+            </Text>
           </View>
 
           <View>
             <Text style={styles.secaoTitulo}>PASSO A PASSO</Text>
-            <Text style={styles.passoReceitaTexto}>Passo a passo da receita</Text>
+            <Text style={styles.passoReceitaTexto}>{receita?.modoPreparo}</Text>
           </View>
 
           <View style={styles.divisor} />
 
           <View>
             <Text style={styles.secaoTitulo}>INGREDIENTES</Text>
-            <Text style={styles.ingredienteTexto}>- 3 xícaras de açúcar</Text>
-            <Text style={styles.ingredienteTexto}>- 3 ovos</Text>
+            {receita?.ingredientes?.map((ingrediente) => (
+              <Text key={ingrediente?.id} style={styles.ingredienteTexto}>
+                {ingrediente?.descricao}
+              </Text>
+            ))}
           </View>
 
           <View style={styles.botaoWrapper}>
@@ -113,11 +167,11 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   headerIcons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   restaurantName: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 34,
     color: Colors.white,
     paddingTop: 40,
@@ -128,8 +182,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   starsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   avaliacoesTexto: {
@@ -137,13 +191,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   restricoesContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 10,
     paddingTop: 15,
   },
   restricaoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     marginBottom: 5,
   },
@@ -152,11 +206,11 @@ const styles = StyleSheet.create({
   },
   secaoTitulo: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: "600",
     paddingHorizontal: 20,
     paddingTop: 15,
     paddingBottom: 5,
-    textTransform: 'uppercase',
+    textTransform: "uppercase",
   },
   descricaoReceitaTexto: {
     paddingHorizontal: 20,
@@ -164,7 +218,7 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 15,
     lineHeight: 22,
-    color: '#333',
+    color: "#333",
   },
   passoReceitaTexto: {
     paddingHorizontal: 20,
@@ -172,44 +226,44 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 15,
     lineHeight: 22,
-    color: '#333',
+    color: "#333",
   },
   ingredienteTexto: {
     paddingHorizontal: 20,
     fontSize: 16,
     paddingVertical: 4,
     lineHeight: 22,
-    color: '#444',
+    color: "#444",
   },
   divisor: {
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
     borderBottomWidth: 1,
     marginVertical: 10,
   },
   botaoWrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 20,
     marginLeft: 20,
     marginRight: 20,
   },
   botaoAvaliacao: {
-    backgroundColor: '#216AC1',
+    backgroundColor: "#216AC1",
     borderRadius: 15,
     width: 364,
     height: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   botaoEdicao: {
-    backgroundColor: '#6CA08B',
+    backgroundColor: "#6CA08B",
     borderRadius: 15,
     width: 364,
     height: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   textoBotao: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
     color: Colors.white,
   },

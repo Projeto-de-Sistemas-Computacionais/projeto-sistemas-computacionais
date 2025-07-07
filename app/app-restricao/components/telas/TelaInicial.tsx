@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,31 +14,24 @@ import MenuInferior from "../ui/MenuInferior";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+
 const categorias = [
   { id: "1", nome: "Categoria" },
   { id: "2", nome: "Categoria" },
   { id: "3", nome: "Categoria" },
 ];
 
-const receitas = [
-  { id: "1", nome: "Bolo de Cenoura" },
-  { id: "2", nome: "Lasanha" },
-  { id: "3", nome: "Salada Detox" },
-];
-
-const restaurantes = [
-  { id: "1", nome: "Restaurante A" },
-  { id: "2", nome: "Restaurante B" },
-  { id: "3", nome: "Restaurante C" },
-];
-
 const { width } = Dimensions.get("window");
 
 export default function TelaInicial() {
+  const [usuario, setUsuario] = useState(null);
+  const [restaurantes, setRestaurantes] = useState([]);
+  const [receitas, setReceitas] = useState([]);
+
   useEffect(() => {
     let isMounted = true;
 
-    const fetchToken = async () => {
+    const verificarToken = async () => {
       try {
         const token = await AsyncStorage.getItem("authToken");
         if (!token && isMounted) {
@@ -52,11 +45,65 @@ export default function TelaInicial() {
       }
     };
 
-    fetchToken();
+    verificarToken();
 
     return () => {
       isMounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    const buscarUsuarioLogado = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:8080/usuarios/logado",
+            {
+              headers: {
+                "Login-Token": token,
+              },
+            }
+          );
+          setUsuario(response.data);
+        } catch (e) {
+          console.error("Erro ao buscar usuario logado:", e);
+          await AsyncStorage.clear();
+          navigation.navigate("TelaLogin");
+        }
+      }
+    };
+
+    buscarUsuarioLogado();
+  }, []);
+
+  useEffect(() => {
+    const consultarListas = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (!token) {
+          console.warn("Token não encontrado");
+          return;
+        }
+
+        const [resRestaurantes, resReceitas] = await Promise.all([
+          axios.get("http://localhost:8080/restaurantes", {
+            headers: { "Login-Token": token },
+          }),
+          axios.get("http://localhost:8080/receitas", {
+            headers: { "Login-Token": token },
+          }),
+        ]);
+
+        setRestaurantes(resRestaurantes.data);
+        setReceitas(resReceitas.data);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    consultarListas();
   }, []);
 
   const navigation = useNavigation<NavigationProp<any>>();
@@ -73,34 +120,40 @@ export default function TelaInicial() {
     navigation.navigate("TelaLogin");
   }
 
-  async function paraTelaListarReceitas() {
+  function paraTelaListarReceitas() {
     navigation.navigate("TelaListarReceitas");
   }
 
-  async function paraTelaListagemRestaurantes() {
+  function paraTelaListagemRestaurantes() {
     navigation.navigate("TelaListagemRestaurantes");
   }
 
-  const realizarLogout = async () => {
+  async function realizarLogout() {
     const token = await AsyncStorage.getItem("authToken");
 
     if (token) {
-      await axios.post(
-        "http://localhost:8080/usuarios/logout",
-        {},
-        {
-          headers: {
-            "Login-Token": token,
-          },
-        }
-      );
+      try {
+        await axios.post(
+          "http://localhost:8080/usuarios/logout",
+          {},
+          {
+            headers: {
+              "Login-Token": token,
+            },
+          }
+        );
+      } catch (e) {
+        console.error("Erro ao realizar logout:", e);
+        await AsyncStorage.clear();
+        navigation.navigate("TelaLogin");
+      }
     }
 
     await AsyncStorage.clear();
     navigation.navigate("TelaLogin");
-  };
+  }
 
-  const renderCard = (item) => (
+  const renderRestaurante = (item) => (
     <TouchableOpacity key={item.id} style={styles.card}>
       <View style={styles.cardTop}>
         <View style={styles.avaliacao}>
@@ -114,7 +167,28 @@ export default function TelaInicial() {
 
       <View style={styles.cardBottom}>
         <Text style={styles.nomeTexto}>{item.nome}</Text>
-        <Text style={styles.tempoTexto}>Tempo: 30 min</Text>
+        <Text style={styles.tempoTexto}></Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderReceita = (item) => (
+    <TouchableOpacity key={item.id} style={styles.card}>
+      <View style={styles.cardTop}>
+        <View style={styles.avaliacao}>
+          <Ionicons name='star' size={14} color='white' />
+          <Text style={styles.avaliacaoTexto}>5,0 av.</Text>
+        </View>
+        <View style={styles.flag}>
+          <Ionicons name='bookmark-outline' size={20} color='black' />
+        </View>
+      </View>
+
+      <View style={styles.cardBottom}>
+        <Text style={styles.nomeTexto}>{item.titulo}</Text>
+        <Text style={styles.tempoTexto}>
+          Tempo de preparo: {item?.tempoPreparo}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -141,7 +215,9 @@ export default function TelaInicial() {
             >
               <Ionicons name='person-circle-outline' size={48} color='white' />
               <View style={styles.boasVindas}>
-                <Text style={styles.olaTexto}>Olá, fulano</Text>
+                <Text style={styles.olaTexto}>
+                  Olá, {usuario?.nomeCompleto}
+                </Text>
                 <Text style={styles.bemVindoTexto}>Seja bem vindo!</Text>
               </View>
             </View>
@@ -183,7 +259,7 @@ export default function TelaInicial() {
         <FlatList
           horizontal
           data={receitas}
-          renderItem={({ item }) => renderCard(item)}
+          renderItem={({ item }) => renderReceita(item)}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listaHorizontal}
         />
@@ -197,7 +273,7 @@ export default function TelaInicial() {
         <FlatList
           horizontal
           data={restaurantes}
-          renderItem={({ item }) => renderCard(item)}
+          renderItem={({ item }) => renderRestaurante(item)}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listaHorizontal}
         />

@@ -81,7 +81,7 @@ export default function TelaLogin() {
         }}
       >
         <Text style={{ fontSize: 32, color: "black", textAlign: "center" }}>
-          Bem vindo(a) ao (nome aqui)!
+          Bem vindo(a) ao BocaDim!
         </Text>
       </View>
 

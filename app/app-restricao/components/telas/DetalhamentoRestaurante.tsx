@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,13 +6,48 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-} from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import {
+  useNavigation,
+  NavigationProp,
+  useRoute,
+  RouteProp,
+} from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 export default function DetalhamentoRestaurante() {
+  const route = useRoute<RouteProp<any>>();
   const navigation = useNavigation<NavigationProp<any>>();
+  const [restaurante, setRestaurante] = useState(null);
+  const { id } = route.params;
+
+  useEffect(() => {
+    const consultarReceita = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (!token) {
+          console.warn("Token não encontrado");
+          return;
+        }
+
+        const response = await axios.get(
+          `http://localhost:8080/restaurantes/${id}`,
+          {
+            headers: { "Login-Token": token },
+          }
+        );
+
+        setRestaurante(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    consultarReceita();
+  }, []);
 
   async function paraTelaListagemRestaurantes() {
     navigation.navigate("TelaListagemRestaurantes");
@@ -38,13 +73,13 @@ export default function DetalhamentoRestaurante() {
           <View style={styles.header}>
             <View style={styles.headerIcons}>
               <TouchableOpacity onPress={paraTelaListagemRestaurantes}>
-                <Ionicons name="arrow-back-outline" size={32} color="white" />
+                <Ionicons name='arrow-back-outline' size={32} color='white' />
               </TouchableOpacity>
               <TouchableOpacity>
-                <Ionicons name="bookmark" size={32} color="white" />
+                <Ionicons name='bookmark' size={32} color='white' />
               </TouchableOpacity>
             </View>
-            <Text style={styles.restaurantName}>Nome do restaurante</Text>
+            <Text style={styles.restaurantName}>{restaurante?.nome}</Text>
           </View>
 
           {/* Avaliações */}
@@ -52,23 +87,25 @@ export default function DetalhamentoRestaurante() {
             <View style={styles.starsRow}>
               {[...Array(5)].map((_, i) => (
                 <TouchableOpacity key={i}>
-                  <Ionicons name="star-outline" size={25} />
+                  <Ionicons name='star-outline' size={25} />
                 </TouchableOpacity>
               ))}
-              <Text style={styles.avaliacoesTexto}>0 Avaliações</Text>
+              <Text style={styles.avaliacoesTexto}>
+                {restaurante?.avaliacoes?.length} Avaliações
+              </Text>
             </View>
 
             {/* Restrições */}
+
             <View style={styles.restricoesContainer}>
-              <View style={styles.restricaoItem}>
-                <Ionicons name="checkmark-outline" size={25} />
-                <Text style={styles.restricaoTexto}>Restrição que abrange</Text>
-              </View>
-              <View style={styles.restricaoItem}>
-                <Ionicons name="checkmark-outline" size={25} />
-                <Text style={styles.restricaoTexto}>Restrição que abrange</Text>
-              </View>
-              <View style={styles.divisor} />
+              {restaurante?.restricoes?.map((restricao) => (
+                <View style={styles.restricaoItem} key={restricao?.id}>
+                  <Ionicons name='checkmark-outline' size={25} />
+                  <Text style={styles.restricaoTexto}>
+                    {restricao.nome + " - " + restricao.descricao}
+                  </Text>
+                </View>
+              ))}
             </View>
           </View>
 
@@ -81,7 +118,9 @@ export default function DetalhamentoRestaurante() {
               </View>
               <View>
                 <Text style={{ fontSize: 20 }}>
-                  Rua Exemplo, 123 - Bairro - Cidade
+                  {restaurante?.endereco?.rua}, {restaurante?.endereco?.numero}{" "}
+                  - {restaurante?.endereco?.bairro} -{" "}
+                  {restaurante?.endereco?.cidade}
                 </Text>
               </View>
             </View>
@@ -98,19 +137,22 @@ export default function DetalhamentoRestaurante() {
         {/* Barra inferior fixa */}
         <View style={styles.menuInferior}>
           <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
-            <Ionicons name="home-outline" size={24} />
+            <Ionicons name='home-outline' size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <Ionicons name="location-outline" size={24} />
+            <Ionicons name='location-outline' size={24} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
-            <Ionicons name="add-circle-outline" size={24} />
+          <TouchableOpacity
+            style={styles.item}
+            onPress={paraTelaCadastroReceita}
+          >
+            <Ionicons name='add-circle-outline' size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item}>
-            <Ionicons name="bookmark-outline" size={24} />
+            <Ionicons name='bookmark-outline' size={24} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
-            <Ionicons name="person-outline" size={24} />
+            <Ionicons name='person-outline' size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -123,7 +165,7 @@ const styles = StyleSheet.create({
     paddingBottom: 100, // Espaço para a barra inferior
   },
   header: {
-    backgroundColor: '#768E91',
+    backgroundColor: "#768E91",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     height: 200,
@@ -131,13 +173,13 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   headerIcons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   restaurantName: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 34,
-    color: 'white',
+    color: "white",
     paddingTop: 40,
   },
   avaliacoes: {
@@ -146,8 +188,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   starsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
   },
   avaliacoesTexto: {
@@ -155,13 +197,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   restricoesContainer: {
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 10,
     paddingTop: 15,
   },
   restricaoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     marginBottom: 5,
   },
@@ -169,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   divisor: {
-    borderBottomColor: '#ccc',
+    borderBottomColor: "#ccc",
     borderBottomWidth: 1,
     marginVertical: 10,
   },
@@ -178,51 +220,51 @@ const styles = StyleSheet.create({
   },
   localizacaoTitulo: {
     fontSize: 34,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   mapaWrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   mapaBox: {
-    backgroundColor: '#F9EBCF',
+    backgroundColor: "#F9EBCF",
     padding: 20,
     height: 300,
     width: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   botaoWrapper: {
-    alignItems: 'center',
+    alignItems: "center",
     paddingTop: 20,
   },
   botaoAvaliacao: {
-    backgroundColor: '#216AC1',
+    backgroundColor: "#216AC1",
     borderRadius: 15,
     width: 364,
     height: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   textoBotao: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
-    color: 'white',
+    color: "white",
   },
   menuInferior: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
     height: 70,
-    backgroundColor: '#fef7e9',
-    borderColor: '#ddd',
-    position: 'absolute',
+    backgroundColor: "#fef7e9",
+    borderColor: "#ddd",
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
   },
   item: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
