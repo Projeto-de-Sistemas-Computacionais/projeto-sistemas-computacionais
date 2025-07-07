@@ -9,6 +9,7 @@ import projeto.service.EnderecoService;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/endereco")
 public class EnderecoController {

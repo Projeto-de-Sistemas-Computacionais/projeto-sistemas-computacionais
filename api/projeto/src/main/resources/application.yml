@@ -5,13 +5,12 @@ spring:
       hibernate.connection.isolation: 2
     hibernate:
       ddl-auto: create-drop
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   datasource:
     url: jdbc:mysql://localhost:3306/projeto
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+    initialization-mode: always
     hikari:
       minimum-idle: 5
       maximum-pool-size: 10

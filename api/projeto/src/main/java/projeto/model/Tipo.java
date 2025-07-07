@@ -14,10 +14,4 @@ public class Tipo {
 	private Long id;
 
 	private String descricao;
-
-	@OneToMany(mappedBy="tipo")
-	private List<Produto> produtos;
-
-	@ManyToMany(mappedBy="ingredientes")
-	private List<Receita> receitas;
 }

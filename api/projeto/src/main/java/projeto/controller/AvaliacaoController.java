@@ -8,6 +8,7 @@ import projeto.service.AvaliacaoService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/avaliacao")
 public class AvaliacaoController {

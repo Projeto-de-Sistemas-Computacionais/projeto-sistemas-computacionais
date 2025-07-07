@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import projeto.dto.UsuarioSimplesDto;
 import projeto.model.Session;
 import projeto.model.Usuario;
 import projeto.repository.SessionRepository;
@@ -26,13 +27,16 @@ public class SessionService {
         if (session == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário não está logado.");
 
-        return sessionRepository.findByToken(token);
+        return session;
     }
 
-    public Usuario getUsuarioLogado(String token){
+    @Transactional
+    public UsuarioSimplesDto getUsuarioLogado(String token){
         Session session = getSessionByToken(token);
 
-        return usuarioService.buscarPorId(session.getId());
+        Usuario usuario = usuarioService.buscarPorId(session.getUserId());
+
+        return new UsuarioSimplesDto(usuario.getId(), usuario.getNomeCompleto(), usuario.getEmail());
     }
 
     @Transactional

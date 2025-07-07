@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 
 public class Receita {
@@ -24,22 +28,30 @@ public class Receita {
     private String descricao;
     private String modoPreparo;
 
-    @ManyToMany
-    @JoinTable(name = "receita_tipo", joinColumns = @JoinColumn(name = "id_receita"), inverseJoinColumns=@JoinColumn(name="id_tipo"))
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "receita_tipo",
+            joinColumns = @JoinColumn(name = "id_receita"),
+            inverseJoinColumns = @JoinColumn(name = "id_tipo")
+    )
     private List<Tipo> ingredientes;
 
-    @ManyToOne
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "receita_restricao",
+            joinColumns = @JoinColumn(name = "id_receita"),
+            inverseJoinColumns = @JoinColumn(name = "id_restricao")
+    )
+    private List<Restricao> restricoes;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_usuario")
     private Usuario usuarioCriador;
 
-    @ManyToMany
-    @JoinTable(name = "receita_usuario_favoritar", joinColumns = @JoinColumn(name = "id_receita"), inverseJoinColumns=@JoinColumn(name="id_usuario"))
-    private List<Usuario> usuariosFavoritados;
-
-    @OneToMany(mappedBy="receita")
+    @OneToMany(mappedBy = "receita", fetch = FetchType.EAGER)
     private List<Avaliacao> avaliacoes;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "produto_imagens",
             joinColumns = @JoinColumn(name = "produto_id")

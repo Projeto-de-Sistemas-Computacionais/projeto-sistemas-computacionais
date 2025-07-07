@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import projeto.dto.request.LoginUsuarioRequest;
-import projeto.model.Endereco;
+import projeto.dto.LoginDto;
+import projeto.dto.UsuarioSimplesDto;
 import projeto.model.Session;
 import projeto.model.Usuario;
 import projeto.service.SessionService;
@@ -65,7 +65,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginUsuarioRequest request) {
+    public ResponseEntity<String> login(@RequestBody LoginDto request) {
             Usuario userLogged = usuarioService.login(request.getEmail(), request.getSenha());
 
             Session session = sessionService.findByUserId(userLogged.getId());
@@ -91,5 +91,11 @@ public class UsuarioController {
     public ResponseEntity<String> logout(@RequestHeader("login-token") String token) {
             sessionService.invalidateSession(token);
             return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
+    }
+
+    @GetMapping("/logado")
+    public ResponseEntity<UsuarioSimplesDto> buscarUsuarioLogado(@RequestHeader("login-token") String token){
+        UsuarioSimplesDto response = sessionService.getUsuarioLogado(token);
+        return ResponseEntity.ok(response);
     }
 }

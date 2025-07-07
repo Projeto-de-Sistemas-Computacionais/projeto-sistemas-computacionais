@@ -2,6 +2,7 @@ package projeto.service;
 
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario); // salva o usuario no banco
     }
 
+    @Transactional()
     public Usuario buscarPorId(Long id){
         return usuarioRepository.findById(id) // busca usuario pelo ID no banco
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Usuário com id %s não encontrado", id))); // caso não tenha um usuário com este ID, lança uma exception

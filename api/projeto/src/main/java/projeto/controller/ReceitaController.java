@@ -7,10 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import projeto.dto.ReceitaDto;
 import projeto.model.Receita;
 import projeto.service.ReceitaService;
 import projeto.service.SessionService;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/receitas")
 public class ReceitaController {
@@ -22,30 +24,30 @@ public class ReceitaController {
     private SessionService sessionService;
 
     @PostMapping
-    public ResponseEntity<Receita> cadastrar(@RequestBody Receita receita, @RequestHeader("login-token") String token){
+    public ResponseEntity<ReceitaDto> cadastrar(@RequestBody Receita receita, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        Receita response = receitaService.cadastrar(receita);
+        ReceitaDto response = receitaService.cadastrar(receita);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Receita> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token){
+    public ResponseEntity<ReceitaDto> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        Receita response = receitaService.buscarPorId(id);
+        ReceitaDto response = receitaService.buscar(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<Receita>> buscarTodos(@RequestHeader("login-token") String token){
+    public ResponseEntity<List<ReceitaDto>> buscarTodos(@RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        List<Receita> response = receitaService.buscarTodos();
+        List<ReceitaDto> response = receitaService.buscarTodos();
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Receita> atualizar(@PathVariable Long id, @RequestBody Receita receita, @RequestHeader("login-token") String token){
+    public ResponseEntity<ReceitaDto> atualizar(@PathVariable Long id, @RequestBody Receita receita, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        Receita response = receitaService.atualizar(id, receita);
+        ReceitaDto response = receitaService.atualizar(id, receita);
         return ResponseEntity.ok(response);
     }
 

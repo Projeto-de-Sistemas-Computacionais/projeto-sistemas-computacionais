@@ -35,12 +35,22 @@ public class Usuario {
     )
     private List<Restricao> restricoes;
 
-    @OneToMany(mappedBy="usuario")
+    @OneToMany(mappedBy="usuario", fetch = FetchType.EAGER)
     private List<Avaliacao> avaliacoes;
 
-    @OneToMany(mappedBy="usuarioCriador")
-    private List<Receita> receitasCriadas;
-
-    @ManyToMany(mappedBy="usuariosFavoritados")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "receita_usuario_favoritar",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_receita")
+    )
     private List<Receita> receitasFavoritadas;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "restaurante_usuario_favoritar",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_restaurante")
+    )
+    private List<Restaurante> restaurantesFavoritados;
 }

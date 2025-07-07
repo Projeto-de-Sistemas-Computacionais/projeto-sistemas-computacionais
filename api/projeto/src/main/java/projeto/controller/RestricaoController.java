@@ -9,6 +9,7 @@ import projeto.service.SessionService;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/restricao")
 public class RestricaoController {

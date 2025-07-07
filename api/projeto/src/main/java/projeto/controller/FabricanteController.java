@@ -11,6 +11,7 @@ import projeto.model.Fabricante;
 import projeto.service.FabricanteService;
 import projeto.service.SessionService;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/fabricantes")
 public class FabricanteController {

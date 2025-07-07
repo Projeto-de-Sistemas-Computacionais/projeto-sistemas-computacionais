@@ -9,10 +9,15 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class Restaurante {
 
@@ -31,15 +36,15 @@ public class Restaurante {
     @OneToOne(optional=false)
     @JoinColumn(name = "id_endereco")
     private Endereco endereco;
-  
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "restaurante_restricao",
-        joinColumns = @JoinColumn(name = "id_restaurante"),
-        inverseJoinColumns = @JoinColumn(name = "id_restricao")
+            name = "restaurante_restricao",
+            joinColumns = @JoinColumn(name = "id_restaurante"),
+            inverseJoinColumns = @JoinColumn(name = "id_restricao")
     )
     private List<Restricao> restricoes;
 
-    @OneToMany(mappedBy="restaurante")
+    @OneToMany(mappedBy = "restaurante", fetch = FetchType.EAGER)
     private List<Avaliacao> avaliacoes;
 }
