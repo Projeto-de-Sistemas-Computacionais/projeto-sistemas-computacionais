@@ -3,17 +3,14 @@ import {
   View,
   Text,
   TextInput,
-  Linking,
   TouchableOpacity,
-  Dimensions,
   StyleSheet,
+  ScrollView
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Ícones
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const { width } = Dimensions.get("window");
 
 export default function TelaLogin() {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -68,7 +65,7 @@ export default function TelaLogin() {
   };
 
   return (
-    <View style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 }}>
       <View
         style={{
           backgroundColor: "#768E91",
@@ -80,8 +77,8 @@ export default function TelaLogin() {
           width: "100%",
         }}
       >
-        <Text style={{ fontSize: 32, color: "black", textAlign: "center" }}>
-          Bem vindo(a) ao BocaDim!
+        <Text style={{ fontSize: 32, color: "white", textAlign: "center" }}>
+          Boas-vindas ao BocaDim!
         </Text>
       </View>
 
@@ -133,7 +130,7 @@ export default function TelaLogin() {
             style={[styles.button, { width: "50%" }]}
             onPress={realizarLogin}
           >
-            <Text style={{ textAlign: "center", fontSize: 20 }}>Entrar</Text>
+            <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Entrar</Text>
           </TouchableOpacity>
 
           <Text
@@ -144,7 +141,7 @@ export default function TelaLogin() {
           </Text>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
