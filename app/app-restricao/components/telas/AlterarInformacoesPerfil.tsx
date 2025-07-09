@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, Platform } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, Platform, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
+type Restricao = { id?: number; nome: string };
 
 export default function AlterarInformacoesPerfil() {
   const navigation = useNavigation<NavigationProp<any>>();
@@ -13,10 +16,90 @@ export default function AlterarInformacoesPerfil() {
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
+  const [restricoes, setRestricoes] = useState<Restricao[]>([]);
+  const [senhaAtual, setSenhaAtual] = useState('');
   const [senhaVisivel, setSenhaVisivel] = useState(false);
-  const [confSenha, setConfSenha] = useState('');
-  const [confSenhaVisivel, setConfSenhaVisivel] = useState(false);
+  const [idUsuario, setIdUsuario] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function buscarDadosUsuario() {
+      try {
+        const token = await AsyncStorage.getItem('authToken');
+        if (!token) {
+            Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
+            navigation.navigate('TelaLogin');
+            return;
+        }
+
+        const response = await axios.get('http://localhost:8080/usuarios/logado', {
+          headers: { 'login-token': token },
+        });
+
+        const id = response.data.id;
+
+        const dadosCompletos = await axios.get(`http://localhost:8080/usuarios/${id}`, {
+          headers: { 'login-token': token },
+        });
+
+        const { nomeCompleto, email, restricoes } = dadosCompletos.data;
+        setIdUsuario(id);
+        setNome(nomeCompleto);
+        setEmail(email);
+        setRestricoes(restricoes || []);
+      } catch (error) {
+        console.error('Erro ao buscar dados do usuário:', error?.response?.data || error.message);
+        Alert.alert('Erro', 'Não foi possível carregar os dados do usuário. Faça login novamente.');
+        navigation.navigate('TelaLogin');
+      }
+    }
+
+    buscarDadosUsuario();
+  }, []);
+
+  function emailValido(email: string): boolean {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  }
+
+  const handleSalvarAlteracoes = async () => {
+      if (!nome.trim() || !email.trim()) {
+        Alert.alert('Campos obrigatórios', 'Nome e email não podem ficar em branco.');
+        return;
+      }
+
+        if (!emailValido(email)) {
+          Alert.alert('Email inválido', 'Informe um endereço de email válido.');
+          return;
+        }
+
+    if (!senhaAtual) {
+      Keyboard.dismiss();
+      setTimeout(() => {
+        Alert.alert('Informe sua senha para confirmar as alterações.');
+      }, 300);
+      return;
+    }
+
+    try {
+      const token = await AsyncStorage.getItem('authToken');
+
+      const payload = {
+        nomeCompleto: nome,
+        email: email,
+        senha: senhaAtual,
+        restricoes: restricoes.filter(r => r.nome.trim() !== '')
+      };
+
+      await axios.put(`http://localhost:8080/usuarios/${idUsuario}`, payload, {
+        headers: { 'login-token': token },
+      });
+      Alert.alert('Sucesso', 'Informações atualizadas com sucesso!');
+      navigation.navigate('TelaMeuPerfil');
+    } catch (error) {
+      console.error('Erro ao atualizar informações:', error);
+      Alert.alert('Erro', 'Não foi possível atualizar as informações. Verifique sua senha.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -37,58 +120,62 @@ export default function AlterarInformacoesPerfil() {
 
           <View style={styles.formContainer}>
             <Text style={styles.label}>Nome completo</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nome Sobrenome"
-              value={nome}
-              onChangeText={setNome}
-            />
+            <TextInput style={styles.input} value={nome} onChangeText={setNome}/>
 
             <Text style={styles.label}>Endereço de email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="email@exemplo.com"
-              keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
-            />
+            <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
 
-            <Text style={styles.label}>Senha</Text>
+            <Text style={styles.label}>Restrições</Text>
+            {restricoes.map((r, index) => (
+              <View key={index} style={styles.restrictionItem}>
+                <TextInput
+                  style={[styles.input,  { flex: 1 }]}
+                  value={r.nome}
+                  onChangeText={(text) => {
+                    const novas = [...restricoes];
+                    novas[index].nome = text;
+                    setRestricoes(novas);
+                  }}
+                />
+                <TouchableOpacity onPress={() => {
+                  const novas = restricoes.filter((_, i) => i !== index);
+                  setRestricoes(novas);
+                }}>
+                  <Ionicons name="trash-outline" size={20} />
+                </TouchableOpacity>
+              </View>
+            ))}
+
+            <TouchableOpacity
+              disabled={restricoes.length > 0 && restricoes[restricoes.length - 1].nome.trim() === ''}
+              onPress={() => setRestricoes([...restricoes, { nome: '' }])}
+            >
+              <Text style={{ color: '#6CA08B', marginVertical: 10 }}>+ Adicionar restrição</Text>
+            </TouchableOpacity>
+
+
+            <Text style={styles.label}>Insira sua senha para confirmar as alterações</Text>
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.input}
+                placeholder="Senha"
                 secureTextEntry={!senhaVisivel}
-                value={senha}
-                onChangeText={setSenha}
+                value={senhaAtual}
+                onChangeText={setSenhaAtual}
               />
               <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)} style={styles.icon}>
                 <Ionicons name={senhaVisivel ? 'eye-off' : 'eye'} size={24} color="gray" />
               </TouchableOpacity>
             </View>
 
-            <Text style={styles.label}>Confirmar senha</Text>
-            <View style={styles.passwordContainer}>
-              <TextInput
-                style={styles.input}
-                secureTextEntry={!confSenhaVisivel}
-                value={confSenha}
-                onChangeText={setConfSenha}
-              />
-              <TouchableOpacity onPress={() => setConfSenhaVisivel(!confSenhaVisivel)} style={styles.icon}>
-                <Ionicons name={confSenhaVisivel ? 'eye-off' : 'eye'} size={24} color="gray" />
-              </TouchableOpacity>
-            </View>
+            
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.buttonSave]}
-          onPress={() => { Keyboard.dismiss(); alert('Alterações salvas!'); }}>
-          <Text style={styles.buttonText}>Salvar</Text>
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity style={[styles.button, styles.buttonSave]} onPress={handleSalvarAlteracoes}>
+        <Text style={styles.buttonText}>Salvar</Text>
+      </TouchableOpacity>
 
     </SafeAreaView>
 
@@ -146,6 +233,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 16,
     marginBottom: 10,
+  },
+  restrictionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+    gap: 10
   },
   button: {
     borderRadius: 10,

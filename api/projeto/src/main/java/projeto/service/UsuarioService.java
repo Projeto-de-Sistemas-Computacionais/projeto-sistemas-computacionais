@@ -1,5 +1,6 @@
 package projeto.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -12,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import projeto.model.Endereco;
 import projeto.model.Restricao;
 import projeto.model.Usuario;
-import projeto.repository.RestricaoRepository;
 import projeto.repository.UsuarioRepository;
 
 @Slf4j
@@ -26,7 +26,7 @@ public class UsuarioService {
     private EnderecoService enderecoService;
 
     @Autowired
-    private RestricaoRepository restricaoRepository;
+    private RestricaoService restricaoService;
 
     public Usuario cadastrar(Usuario usuario){
         boolean usuarioExistente = usuarioRepository.existsByEmail(usuario.getEmail());
@@ -38,7 +38,7 @@ public class UsuarioService {
 
         List<Restricao> restricoes = usuario.getRestricoes();
         for(Restricao restricao : restricoes)
-            restricaoRepository.save(restricao); // salva restricoes no banco, alterar para usar RestricaoService
+            restricaoService.cadastrar(restricao); // salva restricoes no banco, alterar para usar RestricaoService
 
         return usuarioRepository.save(usuario); // salva o usuario no banco
     }
@@ -53,14 +53,47 @@ public class UsuarioService {
         return usuarioRepository.findAll(); // busca todos usuarios do banco
     }
 
-    public Usuario atualizar(Long id, Usuario usuario){
-        buscarPorId(id); // busca por id, quando não encontrar ele vai lançar exception e não vai continuar o próximo passo
+    public Usuario atualizar(Long id, Usuario usuarioAtualizado) {
+        Usuario usuarioExistente = buscarPorId(id);
 
-        //falta atualizar endereco e restricoes
+        if (!usuarioExistente.getSenha().equals(usuarioAtualizado.getSenha())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Senha incorreta.");
+        }
 
-        usuario.setId(id); // adiciona o id no usuario
-        return usuarioRepository.save(usuario); // salva no banco
+        usuarioExistente.setNomeCompleto(usuarioAtualizado.getNomeCompleto());
+        usuarioExistente.setEmail(usuarioAtualizado.getEmail());
+
+        // Desassocia restrições antigas
+        usuarioExistente.getRestricoes().clear();
+
+        // Cria novas restrições
+        List<Restricao> novasRestricoes = new ArrayList<>();
+        for (Restricao restricao : usuarioAtualizado.getRestricoes()) {
+            Restricao nova = new Restricao();
+            nova.setNome(restricao.getNome());
+            nova.setDescricao(restricao.getDescricao());
+            Restricao salva = restricaoService.cadastrar(nova);
+            novasRestricoes.add(salva);
+        }
+
+        usuarioExistente.setRestricoes(novasRestricoes);
+        Usuario salvo = usuarioRepository.save(usuarioExistente);
+
+        return salvo;
     }
+
+    public Usuario atualizarSenha(Long id, String senhaAtual, String novaSenha) {
+        Usuario usuarioExistente = buscarPorId(id);
+
+        if (!usuarioExistente.getSenha().equals(senhaAtual)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Senha atual incorreta.");
+        }
+
+        usuarioExistente.setSenha(novaSenha);
+        Usuario salvo = usuarioRepository.save(usuarioExistente);
+        return salvo;
+    }
+
 
     public void deletar(Long id){
         buscarPorId(id); // busca por id, quando não encontrar ele vai lançar exception e não vai continuar o próximo passo

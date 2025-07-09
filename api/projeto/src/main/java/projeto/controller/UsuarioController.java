@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import projeto.dto.LoginDto;
 import projeto.dto.UsuarioSimplesDto;
+import projeto.dto.AlteracaoSenhaDto;
 import projeto.model.Session;
 import projeto.model.Usuario;
 import projeto.service.SessionService;
@@ -54,6 +55,15 @@ public class UsuarioController {
 
         Usuario response = usuarioService.atualizar(id, usuario);
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/{id}/senha")
+    public ResponseEntity<Void> alterarSenha(@PathVariable Long id, @RequestBody AlteracaoSenhaDto dto, @RequestHeader("login-token") String token) {
+        sessionService.getSessionByToken(token);
+
+        usuarioService.atualizarSenha(id, dto.getSenhaAtual(), dto.getNovaSenha());
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("{id}")
