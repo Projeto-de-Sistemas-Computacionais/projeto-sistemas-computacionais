@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Linking, TouchableOpacity, Dimensions, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Ícones
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
@@ -19,6 +19,7 @@ export default function TelaCadastro() {
     const [senhaVisivel, setSenhaVisivel] = useState(false);
     const [confSenhaVisivel, setConfSenhaVisivel] = useState(false);
     const [tipoConta, setTipoConta] = useState('Pessoa física');
+    const [restricoes, setRestricoes] = useState([{ nome: '' }]);
 
     const endereco = {
         rua: "Rua das Acácias",
@@ -31,10 +32,6 @@ export default function TelaCadastro() {
         latitude: -23.55052,
         longitude: -46.63331
     };
-
-    const restricoes = [{
-        nome: "Acesso restrito a cadeirantes"
-    }];
 
     const alternarVisibilidadeSenha = () => {
         setSenhaVisivel(!senhaVisivel);
@@ -65,15 +62,22 @@ export default function TelaCadastro() {
             return;
         }
 
+        const restricoesValidas = restricoes.filter(r => r.nome.trim() !== '');
+
+        const payload: any = {
+            nomeCompleto,
+            email,
+            senha,
+            endereco,
+            tipoConta,
+        };
+
+        if (restricoesValidas.length > 0) {
+            payload.restricoes = restricoesValidas;
+        }
+
         try {
-            const response = await axios.post("http://localhost:8080/usuarios", {
-                nomeCompleto,
-                email,
-                senha,
-                endereco,
-                restricoes,
-                tipoConta
-            });
+            const response = await axios.post("http://localhost:8080/usuarios", payload);
 
             if (response.status === 201) {
                 Alert.alert("Sucesso", "Cadastro realizado com sucesso!");
@@ -149,6 +153,28 @@ export default function TelaCadastro() {
                             <Ionicons name={confSenhaVisivel ? 'eye-off' : 'eye'} size={24} color="gray" />
                         </TouchableOpacity>
                     </View>
+                    
+                    <Text style={styles.label}>Restrições</Text>
+                    {restricoes.map((item, index) => (
+                        <TextInput
+                            key={index}
+                            style={[styles.input, { marginBottom: 10 }]}
+                            placeholder={`Restrição ${index + 1}`}
+                            value={item.nome}
+                            onChangeText={(text) => {
+                                const novas = [...restricoes];
+                                novas[index].nome = text;
+                                setRestricoes(novas);
+                            }}
+                        />
+                    ))}
+
+                    <TouchableOpacity
+                        style={[styles.botao, { backgroundColor: '#aaa', marginTop: 10 }]}
+                        onPress={() => setRestricoes([...restricoes, { nome: '' }])}
+                    >
+                        <Text style={styles.botaoText}>+ Adicionar restrição</Text>
+                    </TouchableOpacity>
 
                     <Text style={styles.label}>
                         Tipo de conta
