@@ -1,18 +1,14 @@
 package projeto.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import projeto.dto.ReceitaDto;
 import projeto.model.Receita;
 import projeto.service.ReceitaService;
-import projeto.service.SessionService;
 
-@CrossOrigin(origins = "http://localhost:8081")
+import java.util.List;
+
 @RestController
 @RequestMapping("/receitas")
 public class ReceitaController {
@@ -20,40 +16,32 @@ public class ReceitaController {
     @Autowired
     private ReceitaService receitaService;
 
-    @Autowired
-    private SessionService sessionService;
-
     @PostMapping
-    public ResponseEntity<ReceitaDto> cadastrar(@RequestBody Receita receita, @RequestHeader("login-token") String token){
-        sessionService.getSessionByToken(token);
-        ReceitaDto response = receitaService.cadastrar(receita);
+    public ResponseEntity<Receita> cadastrar(@RequestBody Receita receita){
+        Receita response = receitaService.cadastrar(receita);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ReceitaDto> buscarPorId(@PathVariable Long id, @RequestHeader("login-token") String token){
-        sessionService.getSessionByToken(token);
-        ReceitaDto response = receitaService.buscar(id);
+    public ResponseEntity<Receita> buscarPorId(@PathVariable Long id){
+        Receita response = receitaService.buscarPorId(id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<ReceitaDto>> buscarTodos(@RequestHeader("login-token") String token){
-        sessionService.getSessionByToken(token);
-        List<ReceitaDto> response = receitaService.buscarTodos();
+    public ResponseEntity<List<Receita>> buscarTodos(@RequestParam(name = "filtro", required = false, defaultValue = "") String filtro){
+        List<Receita> response = receitaService.buscarTodos(filtro);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ReceitaDto> atualizar(@PathVariable Long id, @RequestBody Receita receita, @RequestHeader("login-token") String token){
-        sessionService.getSessionByToken(token);
-        ReceitaDto response = receitaService.atualizar(id, receita);
+    public ResponseEntity<Receita> atualizar(@PathVariable Long id, @RequestBody Receita receita){
+        Receita response = receitaService.atualizar(id, receita);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id, @RequestHeader("login-token") String token){
-        sessionService.getSessionByToken(token);
+    public ResponseEntity<Void> deletar(@PathVariable Long id){
         receitaService.deletar(id);
         return ResponseEntity.noContent().build();
     }

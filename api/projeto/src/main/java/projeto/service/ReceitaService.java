@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import projeto.dto.ReceitaDto;
-import projeto.mapper.ReceitaMapper;
 import projeto.model.Receita;
 import projeto.repository.ReceitaRepository;
 
@@ -19,9 +17,8 @@ public class ReceitaService {
     @Autowired
     private ReceitaRepository receitaRepository;
 
-    public ReceitaDto cadastrar(Receita receita){
-        receitaRepository.save(receita);
-        return ReceitaMapper.toReceitaDto(receita);
+    public Receita cadastrar(Receita receita){
+        return receitaRepository.save(receita);
     }
 
     public Receita buscarPorId(Long id){
@@ -29,22 +26,15 @@ public class ReceitaService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Receita com id %s não encontrado", id)));
     }
 
-    public ReceitaDto buscar(Long id){
-        Receita receita = buscarPorId(id);
-        return ReceitaMapper.toReceitaDto(receita);
+    public List<Receita> buscarTodos(String filtro){
+        return receitaRepository.findAllReceita(filtro);
     }
 
-    public List<ReceitaDto> buscarTodos(){
-        List<Receita> receitas = receitaRepository.findAll();
-        return receitas.stream().map(ReceitaMapper::toReceitaDto).toList();
-    }
-
-    public ReceitaDto atualizar(Long id, Receita receita){
+    public Receita atualizar(Long id, Receita receita){
         buscarPorId(id);
 
         receita.setId(id);
-        receitaRepository.save(receita);
-        return ReceitaMapper.toReceitaDto(receita);
+        return receitaRepository.save(receita);
     }
 
     public void deletar(Long id){
