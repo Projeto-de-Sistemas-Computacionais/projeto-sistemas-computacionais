@@ -36,7 +36,7 @@ public class SessionService {
 
         Usuario usuario = usuarioService.buscarPorId(session.getUserId());
 
-        return new UsuarioSimplesDto(usuario.getId(), usuario.getNomeCompleto(), usuario.getEmail());
+        return new UsuarioSimplesDto(usuario.getId(), usuario.getNomeCompleto(), usuario.getEmail(), usuario.getEndereco(), usuario.getRestricoes());
     }
 
     @Transactional
