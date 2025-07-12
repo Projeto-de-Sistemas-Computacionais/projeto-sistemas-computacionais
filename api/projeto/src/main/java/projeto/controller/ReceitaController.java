@@ -38,9 +38,9 @@ public class ReceitaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ReceitaDto>> buscarTodos(@RequestHeader("login-token") String token){
+    public ResponseEntity<List<ReceitaDto>> buscarTodos(@RequestParam(name = "filtro", required = false, defaultValue = "") String filtro, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        List<ReceitaDto> response = receitaService.buscarTodos();
+        List<ReceitaDto> response = receitaService.buscarTodos(filtro);
         return ResponseEntity.ok(response);
     }
 

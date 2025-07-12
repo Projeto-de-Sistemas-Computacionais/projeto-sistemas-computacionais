@@ -34,8 +34,8 @@ public class ReceitaService {
         return ReceitaMapper.toReceitaDto(receita);
     }
 
-    public List<ReceitaDto> buscarTodos(){
-        List<Receita> receitas = receitaRepository.findAll();
+    public List<ReceitaDto> buscarTodos(String filtro){
+        List<Receita> receitas = receitaRepository.findAllReceita(filtro);
         return receitas.stream().map(ReceitaMapper::toReceitaDto).toList();
     }
 
