@@ -1,7 +1,11 @@
 package projeto.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import projeto.model.Receita;
+
+import java.util.List;
 
 public interface ReceitaRepository  extends JpaRepository<Receita, Long> {
 
