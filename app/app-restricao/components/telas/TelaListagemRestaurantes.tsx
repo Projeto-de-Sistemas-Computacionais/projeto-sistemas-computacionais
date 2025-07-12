@@ -13,6 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import MenuInferior from "../ui/MenuInferior";
 
 const { width } = Dimensions.get("window");
 
@@ -112,23 +113,7 @@ export default function TelaListagemRestaurantes() {
         contentContainerStyle={{ paddingBottom: 30 }}
       />
 
-      <View style={styles.menuInferior}>
-        <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
-          <Ionicons name='home-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name='location-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
-          <Ionicons name='add-circle-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name='bookmark-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
-          <Ionicons name='person-outline' size={24} />
-        </TouchableOpacity>
-      </View>
+      <MenuInferior />
     </View>
   );
 }

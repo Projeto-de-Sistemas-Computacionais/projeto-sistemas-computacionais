@@ -156,10 +156,6 @@ export default function TelaInicial() {
   const renderRestaurante = (item) => (
     <TouchableOpacity key={item.id} style={styles.card}>
       <View style={styles.cardTop}>
-        <View style={styles.avaliacao}>
-          <Ionicons name='star' size={14} color='white' />
-          <Text style={styles.avaliacaoTexto}>5,0 av.</Text>
-        </View>
         <View style={styles.flag}>
           <Ionicons name='bookmark-outline' size={20} color='black' />
         </View>
@@ -175,10 +171,6 @@ export default function TelaInicial() {
   const renderReceita = (item) => (
     <TouchableOpacity key={item.id} style={styles.card}>
       <View style={styles.cardTop}>
-        <View style={styles.avaliacao}>
-          <Ionicons name='star' size={14} color='white' />
-          <Text style={styles.avaliacaoTexto}>5,0 av.</Text>
-        </View>
         <View style={styles.flag}>
           <Ionicons name='bookmark-outline' size={20} color='black' />
         </View>
@@ -225,22 +217,8 @@ export default function TelaInicial() {
               <Ionicons name='exit-outline' size={28} color='white' />
             </TouchableOpacity>
           </View>
-
-          <View style={styles.inputWrapper}>
-            <Ionicons
-              name='search-outline'
-              size={20}
-              color='white'
-              style={styles.searchIcon}
-            />
-            <TextInput
-              placeholder='Pesquisar'
-              placeholderTextColor='white'
-              style={styles.campoBusca}
-            />
-          </View>
         </View>
-
+        {/*
         <Text style={styles.tituloSecao}>Categorias</Text>
         <FlatList
           horizontal
@@ -248,7 +226,7 @@ export default function TelaInicial() {
           renderItem={renderCategoria}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listaHorizontal}
-        />
+        />*/}
 
         <View style={styles.headerSecao}>
           <Text style={styles.tituloSecao}>Receitas Recomendadas</Text>
@@ -313,7 +291,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   tituloSecao: {
-    fontSize: width * 0.035,
+    fontSize: width * 0.02,
     fontWeight: "500",
     paddingHorizontal: 20,
     paddingTop: 15,

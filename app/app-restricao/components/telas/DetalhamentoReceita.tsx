@@ -60,6 +60,29 @@ export default function DetalhamentoReceita() {
     navigation.navigate("TelaListarReceitas");
   }
 
+  const favoritarReceita = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        console.warn("Token não encontrado");
+        return;
+      }
+
+      await axios.post(
+        `http://localhost:8080/receitas/${id}/favoritar`,
+        {},
+        {
+          headers: { "Login-Token": token },
+        }
+      );
+
+      alert("Receita favoritada com sucesso!");
+    } catch (error) {
+      console.error("Erro ao favoritar a receita:", error);
+      alert("Erro ao favoritar. Tente novamente.");
+    }
+  };
+
   const { width } = Dimensions.get("window");
 
   return (
@@ -71,7 +94,7 @@ export default function DetalhamentoReceita() {
               <TouchableOpacity onPress={paraTelaListarReceitas}>
                 <Ionicons name='arrow-back-outline' size={32} color='white' />
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={favoritarReceita}>
                 <Ionicons name='bookmark' size={32} color='white' />
               </TouchableOpacity>
             </View>
@@ -79,15 +102,6 @@ export default function DetalhamentoReceita() {
           </View>
 
           <View style={styles.avaliacoes}>
-            <View style={styles.starsRow}>
-              {[...Array(5)].map((_) => (
-                <Ionicons name='star-outline' size={25} />
-              ))}
-              <Text style={styles.avaliacoesTexto}>
-                {receita?.avaliacoes?.length ?? 0}
-              </Text>
-            </View>
-
             <View style={styles.starsRow}>
               <Ionicons name='play' size={25} />
               <Text style={styles.avaliacoesTexto}>
@@ -105,9 +119,7 @@ export default function DetalhamentoReceita() {
               {receita?.restricoes?.map((restricao) => (
                 <View style={styles.restricaoItem} key={restricao?.id}>
                   <Ionicons name='checkmark-outline' size={25} />
-                  <Text style={styles.restricaoTexto}>
-                    {restricao.nome + " - " + restricao.descricao}
-                  </Text>
+                  <Text style={styles.restricaoTexto}>{restricao.nome}</Text>
                 </View>
               ))}
             </View>
@@ -137,16 +149,21 @@ export default function DetalhamentoReceita() {
           </View>
 
           <View style={styles.botaoWrapper}>
-            <TouchableOpacity style={styles.botaoEdicao}>
+            <TouchableOpacity
+              style={styles.botaoEdicao}
+              onPress={() =>
+                navigation.navigate("TelaEditarReceita", { id: receita?.id })
+              }
+            >
               <Text style={styles.textoBotao}>Editar receita</Text>
             </TouchableOpacity>
           </View>
-
+          {/*
           <View style={styles.botaoWrapper}>
             <TouchableOpacity style={styles.botaoAvaliacao}>
               <Text style={styles.textoBotao}>☆ Fazer uma avaliação</Text>
             </TouchableOpacity>
-          </View>
+          </View>*/}
         </ScrollView>
         <MenuInferior />
       </View>

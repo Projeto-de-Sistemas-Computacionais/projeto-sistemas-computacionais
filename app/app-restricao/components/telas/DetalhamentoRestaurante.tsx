@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  Image,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import {
@@ -16,6 +17,7 @@ import {
 } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import MenuInferior from "../ui/MenuInferior";
 
 export default function DetalhamentoRestaurante() {
   const route = useRoute<RouteProp<any>>();
@@ -49,6 +51,29 @@ export default function DetalhamentoRestaurante() {
     consultarReceita();
   }, []);
 
+  const favoritarRestaurante = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+      if (!token) {
+        console.warn("Token não encontrado");
+        return;
+      }
+
+      await axios.post(
+        `http://localhost:8080/restaurantes/${id}/favoritar`,
+        {},
+        {
+          headers: { "Login-Token": token },
+        }
+      );
+
+      alert("Restaurante favoritado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao favoritar o restaurante:", error);
+      alert("Erro ao favoritar. Tente novamente.");
+    }
+  };
+
   async function paraTelaListagemRestaurantes() {
     navigation.navigate("TelaListagemRestaurantes");
   }
@@ -76,7 +101,12 @@ export default function DetalhamentoRestaurante() {
                 <Ionicons name='arrow-back-outline' size={32} color='white' />
               </TouchableOpacity>
               <TouchableOpacity>
-                <Ionicons name='bookmark' size={32} color='white' />
+                <Ionicons
+                  name='bookmark'
+                  size={32}
+                  color='white'
+                  onPress={favoritarRestaurante}
+                />
               </TouchableOpacity>
             </View>
             <Text style={styles.restaurantName}>{restaurante?.nome}</Text>
@@ -84,17 +114,6 @@ export default function DetalhamentoRestaurante() {
 
           {/* Avaliações */}
           <View style={styles.avaliacoes}>
-            <View style={styles.starsRow}>
-              {[...Array(5)].map((_, i) => (
-                <TouchableOpacity key={i}>
-                  <Ionicons name='star-outline' size={25} />
-                </TouchableOpacity>
-              ))}
-              <Text style={styles.avaliacoesTexto}>
-                {restaurante?.avaliacoes?.length} Avaliações
-              </Text>
-            </View>
-
             {/* Restrições */}
 
             <View style={styles.restricoesContainer}>
@@ -113,48 +132,37 @@ export default function DetalhamentoRestaurante() {
           <View style={styles.localizacaoContainer}>
             <Text style={styles.localizacaoTitulo}>Localização:</Text>
             <View style={styles.mapaWrapper}>
-              <View style={styles.mapaBox}>
-                <Text>Mapa</Text>
-              </View>
               <View>
                 <Text style={{ fontSize: 20 }}>
                   {restaurante?.endereco?.rua}, {restaurante?.endereco?.numero}{" "}
-                  - {restaurante?.endereco?.bairro} -{" "}
-                  {restaurante?.endereco?.cidade}
+                  - {restaurante?.endereco?.cidade}
                 </Text>
               </View>
             </View>
           </View>
 
-          {/* Botão de avaliação */}
+          {/* Botão de avaliação
           <View style={styles.botaoWrapper}>
             <TouchableOpacity style={styles.botaoAvaliacao}>
               <Text style={styles.textoBotao}>☆ Fazer uma avaliação</Text>
             </TouchableOpacity>
           </View>
+          */}
+
+          {restaurante?.imagem && (
+            <View style={styles.imagemContainer}>
+              <Image
+                source={{ uri: restaurante.imagem }}
+                style={styles.imagemRestaurante}
+                resizeMode='cover'
+              />
+            </View>
+          )}
         </ScrollView>
 
         {/* Barra inferior fixa */}
-        <View style={styles.menuInferior}>
-          <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
-            <Ionicons name='home-outline' size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name='location-outline' size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.item}
-            onPress={paraTelaCadastroReceita}
-          >
-            <Ionicons name='add-circle-outline' size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item}>
-            <Ionicons name='bookmark-outline' size={24} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
-            <Ionicons name='person-outline' size={24} />
-          </TouchableOpacity>
-        </View>
+
+        <MenuInferior />
       </View>
     </SafeAreaView>
   );
@@ -163,6 +171,16 @@ export default function DetalhamentoRestaurante() {
 const styles = StyleSheet.create({
   scrollContainer: {
     paddingBottom: 100, // Espaço para a barra inferior
+  },
+  imagemContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  imagemRestaurante: {
+    width: 400,
+    height: 400,
+    borderRadius: 12,
   },
   header: {
     backgroundColor: "#768E91",

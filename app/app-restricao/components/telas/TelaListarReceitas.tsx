@@ -14,12 +14,13 @@ import Ionicons from "react-native-vector-icons/Ionicons"; // Ícones
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import MenuInferior from "../ui/MenuInferior";
 
 const { width } = Dimensions.get("window");
 
 export default function TelaListarReceitas() {
   const [receitas, setReceitas] = useState(null);
-
+  const [filtro, setFiltro] = useState("");
   useEffect(() => {
     const consultarReceitas = async () => {
       try {
@@ -29,9 +30,12 @@ export default function TelaListarReceitas() {
           return;
         }
 
-        const response = await axios.get("http://localhost:8080/receitas", {
-          headers: { "Login-Token": token },
-        });
+        const response = await axios.get(
+          `http://localhost:8080/receitas?filtro=${filtro}`,
+          {
+            headers: { "Login-Token": token },
+          }
+        );
 
         setReceitas(response.data);
       } catch (error) {
@@ -40,7 +44,7 @@ export default function TelaListarReceitas() {
     };
 
     consultarReceitas();
-  }, []);
+  }, [filtro]);
 
   const navigation = useNavigation<NavigationProp<any>>();
 
@@ -102,14 +106,11 @@ export default function TelaListarReceitas() {
           <Ionicons name='search' size={20} />
           <TextInput
             placeholder='Pesquisar'
+            value={filtro}
             style={styles.searchInput}
+            onChangeText={setFiltro}
           ></TextInput>
         </View>
-
-        <TouchableOpacity style={styles.filterButton}>
-          <Ionicons name='funnel' size={20} />
-          <Text style={{ color: "#555555" }}>Filtros</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.divider} />
@@ -131,23 +132,7 @@ export default function TelaListarReceitas() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.menuInferior}>
-        <TouchableOpacity style={styles.item} onPress={paraTelaInicial}>
-          <Ionicons name='home-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name='location-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={paraTelaCadastroReceita}>
-          <Ionicons name='add-circle-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
-          <Ionicons name='bookmark-outline' size={24} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.item} onPress={paraTelaMeuPerfil}>
-          <Ionicons name='person-outline' size={24} />
-        </TouchableOpacity>
-      </View>
+      <MenuInferior />
     </View>
   );
 }
@@ -181,7 +166,7 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    backgroundColor: "#eee",
+    paddingLeft: 10,
     borderRadius: 12,
   },
   filterButton: {
