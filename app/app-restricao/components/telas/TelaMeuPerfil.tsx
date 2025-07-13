@@ -210,6 +210,12 @@ export default function TelaMeuPerfil() {
               >
                 <Text>Alterar senha</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.modalItem} onPress={() => {
+                setModalVisible(false);
+                navigation.navigate("TelaExcluirConta");
+              }}>
+                <Text>Excluir conta</Text>
+              </TouchableOpacity>
             </View>
           </TouchableOpacity>
         </Modal>

@@ -18,6 +18,7 @@ import TelaRecuperacaoSenha from "../../components/telas/TelaRecuperacaoSenha";
 import TelaRedefinirSenha from "../../components/telas/TelaRedefinirSenha";
 import TelaEditarReceita from "../../components/telas/TelaEditarReceita";
 import TelaFavoritos from "../../components/telas/TelaFavoritos";
+import TelaExcluirConta from '../../components/telas/TelaExcluirConta'; 
 
 export default function Index() {
   const Stack = createNativeStackNavigator();
@@ -102,6 +103,11 @@ export default function Index() {
       <Stack.Screen
         name='TelaFavoritos'
         component={TelaFavoritos}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name='TelaExcluirConta'
+        component={TelaExcluirConta}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
