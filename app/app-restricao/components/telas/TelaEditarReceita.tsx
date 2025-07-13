@@ -262,6 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 16,
     paddingTop: 16,
+    paddingBottom: 70,
   },
   label: {
     paddingTop: 15,
