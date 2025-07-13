@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, KeyboardAvoidingView, Keyboard, Platform, Alert } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
+  Alert,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 type Restricao = { id?: number; nome: string };
 
@@ -14,32 +26,38 @@ export default function AlterarInformacoesPerfil() {
     navigation.navigate("TelaMeuPerfil");
   }
 
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
   const [restricoes, setRestricoes] = useState<Restricao[]>([]);
-  const [senhaAtual, setSenhaAtual] = useState('');
+  const [senhaAtual, setSenhaAtual] = useState("");
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const [idUsuario, setIdUsuario] = useState<number | null>(null);
 
   useEffect(() => {
     async function buscarDadosUsuario() {
       try {
-        const token = await AsyncStorage.getItem('authToken');
+        const token = await AsyncStorage.getItem("authToken");
         if (!token) {
-            Alert.alert('Erro', 'Sessão expirada. Faça login novamente.');
-            navigation.navigate('TelaLogin');
-            return;
+          Alert.alert("Erro", "Sessão expirada. Faça login novamente.");
+          navigation.navigate("TelaLogin");
+          return;
         }
 
-        const response = await axios.get('http://localhost:8080/usuarios/logado', {
-          headers: { 'login-token': token },
-        });
+        const response = await axios.get(
+          "http://localhost:8080/usuarios/logado",
+          {
+            headers: { "login-token": token },
+          }
+        );
 
         const id = response.data.id;
 
-        const dadosCompletos = await axios.get(`http://localhost:8080/usuarios/${id}`, {
-          headers: { 'login-token': token },
-        });
+        const dadosCompletos = await axios.get(
+          `http://localhost:8080/usuarios/${id}`,
+          {
+            headers: { "login-token": token },
+          }
+        );
 
         const { nomeCompleto, email, restricoes } = dadosCompletos.data;
         setIdUsuario(id);
@@ -47,9 +65,15 @@ export default function AlterarInformacoesPerfil() {
         setEmail(email);
         setRestricoes(restricoes || []);
       } catch (error) {
-        console.error('Erro ao buscar dados do usuário:', error?.response?.data || error.message);
-        Alert.alert('Erro', 'Não foi possível carregar os dados do usuário. Faça login novamente.');
-        navigation.navigate('TelaLogin');
+        console.error(
+          "Erro ao buscar dados do usuário:",
+          error?.response?.data || error.message
+        );
+        Alert.alert(
+          "Erro",
+          "Não foi possível carregar os dados do usuário. Faça login novamente."
+        );
+        navigation.navigate("TelaLogin");
       }
     }
 
@@ -62,42 +86,48 @@ export default function AlterarInformacoesPerfil() {
   }
 
   const handleSalvarAlteracoes = async () => {
-      if (!nome.trim() || !email.trim()) {
-        Alert.alert('Campos obrigatórios', 'Nome e email não podem ficar em branco.');
-        return;
-      }
+    if (!nome.trim() || !email.trim()) {
+      Alert.alert(
+        "Campos obrigatórios",
+        "Nome e email não podem ficar em branco."
+      );
+      return;
+    }
 
-        if (!emailValido(email)) {
-          Alert.alert('Email inválido', 'Informe um endereço de email válido.');
-          return;
-        }
+    if (!emailValido(email)) {
+      Alert.alert("Email inválido", "Informe um endereço de email válido.");
+      return;
+    }
 
     if (!senhaAtual) {
       Keyboard.dismiss();
       setTimeout(() => {
-        Alert.alert('Informe sua senha para confirmar as alterações.');
+        Alert.alert("Informe sua senha para confirmar as alterações.");
       }, 300);
       return;
     }
 
     try {
-      const token = await AsyncStorage.getItem('authToken');
+      const token = await AsyncStorage.getItem("authToken");
 
       const payload = {
         nomeCompleto: nome,
         email: email,
         senha: senhaAtual,
-        restricoes: restricoes.filter(r => r.nome.trim() !== '')
+        restricoes: restricoes.filter((r) => r.nome.trim() !== ""),
       };
 
       await axios.put(`http://localhost:8080/usuarios/${idUsuario}`, payload, {
-        headers: { 'login-token': token },
+        headers: { "login-token": token },
       });
-      Alert.alert('Sucesso', 'Informações atualizadas com sucesso!');
-      navigation.navigate('TelaMeuPerfil');
+      Alert.alert("Sucesso", "Informações atualizadas com sucesso!");
+      navigation.navigate("TelaMeuPerfil");
     } catch (error) {
-      console.error('Erro ao atualizar informações:', error);
-      Alert.alert('Erro', 'Não foi possível atualizar as informações. Verifique sua senha.');
+      console.error("Erro ao atualizar informações:", error);
+      Alert.alert(
+        "Erro",
+        "Não foi possível atualizar as informações. Verifique sua senha."
+      );
     }
   };
 
@@ -105,31 +135,40 @@ export default function AlterarInformacoesPerfil() {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps='handled'
         >
           <View style={styles.header}>
             <TouchableOpacity onPress={paraTelaMeuPerfil}>
-              <Ionicons name="arrow-back" size={24} color={'#fff7e8'} />
+              <Ionicons name='arrow-back' size={24} color={"#fff7e8"} />
             </TouchableOpacity>
             <Text style={styles.headerText}>Alteração de informações</Text>
           </View>
 
           <View style={styles.formContainer}>
             <Text style={styles.label}>Nome completo</Text>
-            <TextInput style={styles.input} value={nome} onChangeText={setNome}/>
+            <TextInput
+              style={styles.input}
+              value={nome}
+              onChangeText={setNome}
+            />
 
             <Text style={styles.label}>Endereço de email</Text>
-            <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType='email-address'
+            />
 
             <Text style={styles.label}>Restrições</Text>
             {restricoes.map((r, index) => (
               <View key={index} style={styles.restrictionItem}>
                 <TextInput
-                  style={[styles.input,  { flex: 1 }]}
+                  style={[styles.input, { flex: 1 }]}
                   value={r.nome}
                   onChangeText={(text) => {
                     const novas = [...restricoes];
@@ -137,71 +176,85 @@ export default function AlterarInformacoesPerfil() {
                     setRestricoes(novas);
                   }}
                 />
-                <TouchableOpacity onPress={() => {
-                  const novas = restricoes.filter((_, i) => i !== index);
-                  setRestricoes(novas);
-                }}>
-                  <Ionicons name="trash-outline" size={20} />
+                <TouchableOpacity
+                  onPress={() => {
+                    const novas = restricoes.filter((_, i) => i !== index);
+                    setRestricoes(novas);
+                  }}
+                >
+                  <Ionicons name='trash-outline' size={20} />
                 </TouchableOpacity>
               </View>
             ))}
 
             <TouchableOpacity
-              disabled={restricoes.length > 0 && restricoes[restricoes.length - 1].nome.trim() === ''}
-              onPress={() => setRestricoes([...restricoes, { nome: '' }])}
+              disabled={
+                restricoes.length > 0 &&
+                restricoes[restricoes.length - 1].nome.trim() === ""
+              }
+              onPress={() => setRestricoes([...restricoes, { nome: "" }])}
             >
-              <Text style={{ color: '#6CA08B', marginVertical: 10 }}>+ Adicionar restrição</Text>
+              <Text style={{ color: "#6CA08B", marginVertical: 10 }}>
+                + Adicionar restrição
+              </Text>
             </TouchableOpacity>
 
-
-            <Text style={styles.label}>Insira sua senha para confirmar as alterações</Text>
+            <Text style={styles.label}>
+              Insira sua senha para confirmar as alterações
+            </Text>
             <View style={styles.passwordContainer}>
               <TextInput
                 style={styles.input}
-                placeholder="Senha"
+                placeholder='Senha'
                 secureTextEntry={!senhaVisivel}
                 value={senhaAtual}
                 onChangeText={setSenhaAtual}
               />
-              <TouchableOpacity onPress={() => setSenhaVisivel(!senhaVisivel)} style={styles.icon}>
-                <Ionicons name={senhaVisivel ? 'eye-off' : 'eye'} size={24} color="gray" />
+              <TouchableOpacity
+                onPress={() => setSenhaVisivel(!senhaVisivel)}
+                style={styles.icon}
+              >
+                <Ionicons
+                  name={senhaVisivel ? "eye-off" : "eye"}
+                  size={24}
+                  color='gray'
+                />
               </TouchableOpacity>
             </View>
-
-            
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      <TouchableOpacity style={[styles.button, styles.buttonSave]} onPress={handleSalvarAlteracoes}>
+      <TouchableOpacity
+        style={[styles.button, styles.buttonSave]}
+        onPress={handleSalvarAlteracoes}
+      >
         <Text style={styles.buttonText}>Salvar</Text>
       </TouchableOpacity>
-
     </SafeAreaView>
-
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFCF5',
+    backgroundColor: "#FFFCF5",
   },
   header: {
-    backgroundColor: '#768E91',
+    backgroundColor: "#768E91",
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     height: 200,
-    width: '100%',
-    justifyContent: 'space-around',
+    width: "100%",
+    justifyContent: "space-around",
   },
   headerText: {
     fontSize: 30,
-    color: '#FFFCF5',
-    textAlign: 'center',
+    color: "#FFFCF5",
+    textAlign: "center",
   },
   formContainer: {
-    backgroundColor: '#FFFCF5',
+    backgroundColor: "#FFFCF5",
     paddingTop: 50,
     paddingHorizontal: 16,
     marginBottom: 50,
@@ -213,32 +266,32 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#e5dcd0',
+    borderColor: "#e5dcd0",
     borderRadius: 10,
     padding: 10,
     paddingRight: 40, // espaço para o ícone
     fontSize: 16,
   },
   passwordContainer: {
-    position: 'relative',
-    justifyContent: 'center',
+    position: "relative",
+    justifyContent: "center",
   },
   icon: {
-    position: 'absolute',
+    position: "absolute",
     right: 15,
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   buttonContainer: {
     paddingHorizontal: 16,
     marginBottom: 10,
   },
   restrictionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
-    gap: 10
+    gap: 10,
   },
   button: {
     borderRadius: 10,
@@ -246,12 +299,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonSave: {
-    backgroundColor: '#6CA08B',
-    width: '100%',
+    backgroundColor: "#6CA08B",
+    width: "100%",
   },
   buttonText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 16,
-    color: '#FFFCF5',
+    color: "#FFFCF5",
   },
 });

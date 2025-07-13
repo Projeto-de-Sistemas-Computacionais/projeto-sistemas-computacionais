@@ -1,6 +1,7 @@
 package projeto.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,9 @@ public class TipoService {
 	private TipoRepository tipoRepository;
 
 	public Tipo cadastrar(Tipo tipo) {
-
-		return tipoRepository.save(tipo);
-	}
+		Optional<Tipo> tipoExistente = tipoRepository.findByDescricao(tipo.getDescricao());
+        return tipoExistente.orElseGet(() -> tipoRepository.save(tipo));
+    }
 
 	public Tipo buscarPorId(Long id) {
 		return tipoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

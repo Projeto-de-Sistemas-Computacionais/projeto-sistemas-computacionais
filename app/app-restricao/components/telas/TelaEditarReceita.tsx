@@ -1,31 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
+  Alert,
   FlatList,
 } from "react-native";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  useNavigation,
+  NavigationProp,
+  useRoute,
+  RouteProp,
+} from "@react-navigation/native";
 import axios from "axios";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import MenuInferior from "../ui/MenuInferior";
 
-export default function TelaCadastroReceita() {
+export default function TelaEditarReceita() {
   const navigation = useNavigation<NavigationProp<any>>();
+  const route = useRoute<RouteProp<any>>();
+  const { id } = route.params;
 
   const [nomeReceita, setNomeReceita] = useState("");
   const [duracao, setDuracao] = useState("");
   const [descricao, setDescricao] = useState("");
   const [passos, setPassos] = useState("");
-  const [imagem, setImagem] = useState("");
   const [ingrediente, setIngrediente] = useState("");
   const [listaIngredientes, setListaIngredientes] = useState<string[]>([]);
   const [restricao, setRestricao] = useState("");
   const [listaRestricoes, setListaRestricoes] = useState<string[]>([]);
+
+  useEffect(() => {
+    const carregarReceita = async () => {
+      const token = await AsyncStorage.getItem("authToken");
+      const res = await axios.get(`http://localhost:8080/receitas/${id}`, {
+        headers: { "Login-Token": token },
+      });
+
+      const r = res.data;
+      setNomeReceita(r.titulo);
+      setDuracao(r.tempoPreparo.toString());
+      setDescricao(r.descricao);
+      setPassos(r.modoPreparo);
+      setListaIngredientes(r.ingredientes.map((i) => i.descricao));
+      setListaRestricoes(r.restricoes.map((r) => r.nome));
+    };
+
+    carregarReceita();
+  }, [id]);
 
   const adicionarIngrediente = () => {
     if (ingrediente.trim() !== "") {
@@ -39,6 +65,18 @@ export default function TelaCadastroReceita() {
       setListaRestricoes([...listaRestricoes, restricao]);
       setRestricao("");
     }
+  };
+
+  const removerIngrediente = (index: number) => {
+    const novaLista = [...listaIngredientes];
+    novaLista.splice(index, 1);
+    setListaIngredientes(novaLista);
+  };
+
+  const removerRestricao = (index: number) => {
+    const novaLista = [...listaRestricoes];
+    novaLista.splice(index, 1);
+    setListaRestricoes(novaLista);
   };
 
   async function salvarReceita() {
@@ -68,14 +106,13 @@ export default function TelaCadastroReceita() {
         modoPreparo: passos,
         ingredientes: listaIngredientes.map((desc) => ({ descricao: desc })),
         restricoes: listaRestricoes.map((nome) => ({ nome: nome })),
-        imagens: [imagem],
       };
 
-      await axios.post("http://localhost:8080/receitas", novaReceita, {
+      await axios.put(`http://localhost:8080/receitas/${id}`, novaReceita, {
         headers: { "Login-Token": token },
       });
 
-      alert("Receita criada com sucesso!");
+      alert("Receita editada com sucesso!");
       navigation.navigate("TelaListarReceitas");
     } catch (error) {
       console.error("Erro ao salvar receita:", error);
@@ -91,7 +128,7 @@ export default function TelaCadastroReceita() {
         >
           <Ionicons name='arrow-back' size={24} color={"#fff7e8"} />
         </TouchableOpacity>
-        <Text style={styles.titulo}>Nova receita</Text>
+        <Text style={styles.titulo}>Editar receita</Text>
       </View>
 
       <ScrollView>
@@ -131,15 +168,6 @@ export default function TelaCadastroReceita() {
             multiline
           />
 
-          <Text style={styles.label}>IMAGEM</Text>
-          <TextInput
-            style={styles.inputMaior}
-            value={imagem}
-            onChangeText={setImagem}
-            placeholder='Coloque o link da sua imagem'
-            multiline
-          />
-
           <View style={styles.linha} />
 
           <Text style={styles.label}>INGREDIENTES*</Text>
@@ -162,8 +190,13 @@ export default function TelaCadastroReceita() {
             data={listaIngredientes}
             keyExtractor={(item, index) => index.toString()}
             scrollEnabled={false}
-            renderItem={({ item }) => (
-              <Text style={styles.itemI}>• {item}</Text>
+            renderItem={({ item, index }) => (
+              <View style={styles.itemRemovivel}>
+                <Text style={styles.itemI}>• {item}</Text>
+                <TouchableOpacity onPress={() => removerIngrediente(index)}>
+                  <Ionicons name='trash-outline' size={20} color='red' />
+                </TouchableOpacity>
+              </View>
             )}
           />
 
@@ -187,14 +220,22 @@ export default function TelaCadastroReceita() {
             data={listaRestricoes}
             keyExtractor={(item, index) => index.toString()}
             scrollEnabled={false}
-            renderItem={({ item }) => <Text style={styles.itemR}>{item}</Text>}
+            renderItem={({ item, index }) => (
+              <View style={styles.itemRemovivel}>
+                <Text style={styles.itemR}>{item}</Text>
+                <TouchableOpacity onPress={() => removerRestricao(index)}>
+                  <Ionicons name='trash-outline' size={20} color='red' />
+                </TouchableOpacity>
+              </View>
+            )}
           />
 
           <TouchableOpacity style={styles.botao} onPress={salvarReceita}>
-            <Text style={styles.botaoText}>CRIAR</Text>
+            <Text style={styles.botaoText}>SALVAR</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
       <MenuInferior />
     </View>
   );
@@ -203,7 +244,6 @@ export default function TelaCadastroReceita() {
 const styles = StyleSheet.create({
   tela: {
     flex: 1,
-    paddingBottom: 70,
   },
   menuSup: {
     backgroundColor: "#768E91",
@@ -222,6 +262,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingHorizontal: 16,
     paddingTop: 16,
+    paddingBottom: 70,
   },
   label: {
     paddingTop: 15,
@@ -275,6 +316,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginBottom: 6,
     alignSelf: "flex-start",
+  },
+  itemRemovivel: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 6,
+    paddingLeft: 6,
+    paddingRight: 10,
   },
   menuInferior: {
     flexDirection: "row",

@@ -1,10 +1,8 @@
 package projeto.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -35,9 +33,8 @@ public class Usuario {
     )
     private List<Restricao> restricoes;
 
-    @OneToMany(mappedBy="usuario", fetch = FetchType.EAGER)
-    private List<Avaliacao> avaliacoes;
-
+    @JsonIgnore
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "receita_usuario_favoritar",
@@ -46,6 +43,8 @@ public class Usuario {
     )
     private List<Receita> receitasFavoritadas;
 
+    @JsonIgnore
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "restaurante_usuario_favoritar",

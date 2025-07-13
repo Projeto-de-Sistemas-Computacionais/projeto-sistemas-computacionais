@@ -7,8 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import projeto.dto.LoginDto;
+import projeto.dto.ReceitaDto;
 import projeto.dto.UsuarioSimplesDto;
 import projeto.dto.AlteracaoSenhaDto;
+import projeto.model.Restaurante;
 import projeto.model.Session;
 import projeto.model.Usuario;
 import projeto.service.SessionService;
@@ -76,36 +78,50 @@ public class UsuarioController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto request) {
-            Usuario userLogged = usuarioService.login(request.getEmail(), request.getSenha());
+        Usuario userLogged = usuarioService.login(request.getEmail(), request.getSenha());
 
-            Session session = sessionService.findByUserId(userLogged.getId());
+        Session session = sessionService.findByUserId(userLogged.getId());
 
-            if (session == null) {
-                session = new Session(userLogged.getId());
-                sessionService.createSession(session);
-            } else {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário já está logado.");
-            }
+        if (session == null) {
+            session = new Session(userLogged.getId());
+            sessionService.createSession(session);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Usuário já está logado.");
+        }
 
-            // Adding the token to the response header
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("login-token", session.getToken());
+        // Adding the token to the response header
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("login-token", session.getToken());
 
-            return ResponseEntity.ok()
-                    .headers(responseHeaders)
-                    .header("Access-Control-Expose-Headers", "login-token")
-                    .body("Usuário logado.");
+        return ResponseEntity.ok()
+                .headers(responseHeaders)
+                .header("Access-Control-Expose-Headers", "login-token")
+                .body("Usuário logado.");
     }
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(@RequestHeader("login-token") String token) {
-            sessionService.invalidateSession(token);
-            return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
+        sessionService.invalidateSession(token);
+        return new ResponseEntity<String>("Usuário deslogado.", HttpStatus.OK);
     }
 
     @GetMapping("/logado")
-    public ResponseEntity<UsuarioSimplesDto> buscarUsuarioLogado(@RequestHeader("login-token") String token){
+    public ResponseEntity<UsuarioSimplesDto> buscarUsuarioLogado(@RequestHeader("login-token") String token) {
         UsuarioSimplesDto response = sessionService.getUsuarioLogado(token);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("receitasFavoritas")
+    public ResponseEntity<List<ReceitaDto>> buscarReceitasFavoritadas(@RequestHeader("login-token") String token){
+        Long idUsuario = sessionService.getUsuarioLogado(token).getId();
+        List<ReceitaDto> response = usuarioService.buscarReceitasFavoritas(idUsuario);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("restaurantesFavoritos")
+    public ResponseEntity<List<Restaurante>> buscarRestaurantesFavoritos(@RequestHeader("login-token") String token){
+        Long idUsuario = sessionService.getUsuarioLogado(token).getId();
+        List<Restaurante> response = usuarioService.buscarRestaurantesFavoritos(idUsuario);
         return ResponseEntity.ok(response);
     }
 }

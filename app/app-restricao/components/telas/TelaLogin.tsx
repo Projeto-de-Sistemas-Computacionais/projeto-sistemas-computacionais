@@ -5,7 +5,8 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  Image,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons"; // Ícones
 import { useNavigation, NavigationProp } from "@react-navigation/native";
@@ -80,6 +81,13 @@ export default function TelaLogin() {
         <Text style={{ fontSize: 32, color: "white", textAlign: "center" }}>
           Boas-vindas ao BocaDim!
         </Text>
+        <View style={styles.imagemContainer}>
+          <Image
+            source={require("../../assets/images/logo.png")}
+            style={styles.logo}
+            resizeMode='cover'
+          />
+        </View>
       </View>
 
       <View style={{ flex: 1, padding: 16 }}>
@@ -118,7 +126,12 @@ export default function TelaLogin() {
           </View>
 
           <Text
-            style={{ color: "black", fontSize: 18, marginTop: 10 }}
+            style={{
+              color: "black",
+              fontSize: 18,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
             onPress={paraTelaRecuperacaoSenha}
           >
             Esqueceu a senha?
@@ -130,7 +143,9 @@ export default function TelaLogin() {
             style={[styles.button, { width: "50%" }]}
             onPress={realizarLogin}
           >
-            <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>Entrar</Text>
+            <Text style={{ color: "white", textAlign: "center", fontSize: 20 }}>
+              Entrar
+            </Text>
           </TouchableOpacity>
 
           <Text
@@ -153,6 +168,16 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     paddingTop: 50,
     paddingHorizontal: 16,
+  },
+  imagemContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  logo: {
+    width: 200,
+    height: 200,
+    borderRadius: 12,
   },
   label: {
     fontSize: 24,
@@ -183,6 +208,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#6CA08B",
     padding: 10,
     alignSelf: "center",
-    marginTop: 210,
+    marginTop: 110,
   },
 });

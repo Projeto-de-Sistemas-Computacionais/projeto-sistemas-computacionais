@@ -1,15 +1,15 @@
 package projeto.service;
 import java.util.List;
 
+import org.hibernate.internal.build.AllowSysOut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.extern.slf4j.Slf4j;
-import projeto.model.Endereco;
-import projeto.model.Restaurante;
-import projeto.model.Restricao;
+import projeto.dto.UsuarioSimplesDto;
+import projeto.model.*;
 import projeto.repository.RestauranteRepository;
 import projeto.repository.RestricaoRepository;
 
@@ -25,6 +25,12 @@ public class RestauranteService {
     
     @Autowired
     private EnderecoService enderecoService;
+
+    @Autowired
+    private SessionService sessionService;
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     public Restaurante cadastrar(Restaurante restaurante){
         Endereco endereco = restaurante.getEndereco();
@@ -58,5 +64,22 @@ public class RestauranteService {
     public void deletar(Long id){
         buscarPorId(id); // busca por id, quando não encontrar ele vai lançar exception e não vai continuar o próximo passo
         restauranteRepository.deleteById(id); // deleta o restaurante pelo id informado
+    }
+
+    public void favoritar(Long id, String token){
+        Long idUsuarioLogado = sessionService.getUsuarioLogado(token).getId();
+        Usuario usuarioLogado = usuarioService.buscarPorId(idUsuarioLogado);
+
+        Restaurante restaurante = buscarPorId(id);
+
+        List<Restaurante> restaurantes = usuarioLogado.getRestaurantesFavoritados();
+
+        if (restaurantes.stream().anyMatch(item -> item.getId().equals(restaurante.getId()))) {
+            return;
+        }
+
+        restaurantes.add(restaurante);
+        usuarioLogado.setRestaurantesFavoritados(restaurantes);
+        usuarioService.atualizar(idUsuarioLogado, usuarioLogado);
     }
 }

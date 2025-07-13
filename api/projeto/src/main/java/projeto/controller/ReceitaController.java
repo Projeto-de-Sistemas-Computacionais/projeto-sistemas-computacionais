@@ -26,7 +26,7 @@ public class ReceitaController {
     @PostMapping
     public ResponseEntity<ReceitaDto> cadastrar(@RequestBody Receita receita, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        ReceitaDto response = receitaService.cadastrar(receita);
+        ReceitaDto response = receitaService.cadastrar(receita, token);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
@@ -47,7 +47,7 @@ public class ReceitaController {
     @PutMapping("{id}")
     public ResponseEntity<ReceitaDto> atualizar(@PathVariable Long id, @RequestBody Receita receita, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
-        ReceitaDto response = receitaService.atualizar(id, receita);
+        ReceitaDto response = receitaService.atualizar(id, receita, token);
         return ResponseEntity.ok(response);
     }
 
@@ -55,6 +55,13 @@ public class ReceitaController {
     public ResponseEntity<Void> deletar(@PathVariable Long id, @RequestHeader("login-token") String token){
         sessionService.getSessionByToken(token);
         receitaService.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{id}/favoritar")
+    public ResponseEntity<Void> favoritar(@PathVariable Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+        receitaService.favoritar(id, token);
         return ResponseEntity.noContent().build();
     }
 }

@@ -7,7 +7,9 @@ import org.springframework.web.server.ResponseStatusException;
 import projeto.model.Restricao;
 import projeto.repository.RestricaoRepository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestricaoService {
@@ -17,7 +19,8 @@ public class RestricaoService {
     private RestricaoRepository restricaoRepository;
 
     public Restricao cadastrar(Restricao restricao){
-        return restricaoRepository.save(restricao);
+        Optional<Restricao> restricaoExistente = restricaoRepository.findByNome(restricao.getNome());
+        return restricaoExistente.orElseGet(() -> restricaoRepository.save(restricao));
     }
 
     public List<Restricao> saveAll(List<Restricao> restricoes){

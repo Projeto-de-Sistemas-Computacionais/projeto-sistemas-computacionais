@@ -55,4 +55,11 @@ public class RestauranteController {
         restauranteService.deletar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("{id}/favoritar")
+    public ResponseEntity<Void> favoritar(@PathVariable Long id, @RequestHeader("login-token") String token){
+        sessionService.getSessionByToken(token);
+        restauranteService.favoritar(id, token);
+        return ResponseEntity.noContent().build();
+    }
 }

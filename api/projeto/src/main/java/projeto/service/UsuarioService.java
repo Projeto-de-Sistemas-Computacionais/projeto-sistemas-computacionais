@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.extern.slf4j.Slf4j;
-import projeto.model.Endereco;
-import projeto.model.Restricao;
-import projeto.model.Usuario;
+import projeto.dto.ReceitaDto;
+import projeto.mapper.ReceitaMapper;
+import projeto.model.*;
 import projeto.repository.UsuarioRepository;
 
 @Slf4j
@@ -34,23 +34,23 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuário já cadastrado com o email informado.");
 
         Endereco endereco = usuario.getEndereco();
-        enderecoService.salvar(endereco); // salvo o endereco antes de salvar usuario, alterar para usar EnderecoService
+        enderecoService.salvar(endereco);
 
         List<Restricao> restricoes = usuario.getRestricoes();
         for(Restricao restricao : restricoes)
-            restricaoService.cadastrar(restricao); // salva restricoes no banco, alterar para usar RestricaoService
+            restricaoService.cadastrar(restricao);
 
-        return usuarioRepository.save(usuario); // salva o usuario no banco
+        return usuarioRepository.save(usuario);
     }
 
     @Transactional()
     public Usuario buscarPorId(Long id){
-        return usuarioRepository.findById(id) // busca usuario pelo ID no banco
+        return usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Usuário com id %s não encontrado", id))); // caso não tenha um usuário com este ID, lança uma exception
     }
 
     public List<Usuario> buscarTodos(){
-        return usuarioRepository.findAll(); // busca todos usuarios do banco
+        return usuarioRepository.findAll();
     }
 
     public Usuario atualizar(Long id, Usuario usuarioAtualizado) {
@@ -63,10 +63,8 @@ public class UsuarioService {
         usuarioExistente.setNomeCompleto(usuarioAtualizado.getNomeCompleto());
         usuarioExistente.setEmail(usuarioAtualizado.getEmail());
 
-        // Desassocia restrições antigas
         usuarioExistente.getRestricoes().clear();
 
-        // Cria novas restrições
         List<Restricao> novasRestricoes = new ArrayList<>();
         for (Restricao restricao : usuarioAtualizado.getRestricoes()) {
             Restricao nova = new Restricao();
@@ -74,6 +72,14 @@ public class UsuarioService {
             nova.setDescricao(restricao.getDescricao());
             Restricao salva = restricaoService.cadastrar(nova);
             novasRestricoes.add(salva);
+        }
+
+        if(usuarioAtualizado.getRestaurantesFavoritados() != null && !usuarioAtualizado.getRestaurantesFavoritados().isEmpty()){
+            usuarioExistente.setRestaurantesFavoritados(usuarioAtualizado.getRestaurantesFavoritados());
+        }
+
+        if(usuarioAtualizado.getReceitasFavoritadas() != null && !usuarioAtualizado.getReceitasFavoritadas().isEmpty()){
+            usuarioExistente.setReceitasFavoritadas(usuarioAtualizado.getReceitasFavoritadas());
         }
 
         usuarioExistente.setRestricoes(novasRestricoes);
@@ -94,10 +100,9 @@ public class UsuarioService {
         return salvo;
     }
 
-
     public void deletar(Long id){
-        buscarPorId(id); // busca por id, quando não encontrar ele vai lançar exception e não vai continuar o próximo passo
-        usuarioRepository.deleteById(id); // deleta o usuario pelo id informado
+        buscarPorId(id);
+        usuarioRepository.deleteById(id);
     }
 
     public Usuario login(String email, String senha) {
@@ -109,5 +114,16 @@ public class UsuarioService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou senha estão incorretos");
         }
         return usuarioEncontrado;
+    }
+
+    public List<ReceitaDto> buscarReceitasFavoritas(Long idUsuario){
+        Usuario usuarioLogado = buscarPorId(idUsuario);
+        List<Receita> receitas = usuarioLogado.getReceitasFavoritadas();
+        return receitas.stream().map(ReceitaMapper::toReceitaDto).toList();
+    }
+
+    public List<Restaurante> buscarRestaurantesFavoritos(Long idUsuario){
+        Usuario usuarioLogado = buscarPorId(idUsuario);
+        return usuarioLogado.getRestaurantesFavoritados();
     }
 }
