@@ -74,11 +74,11 @@ public class UsuarioService {
             novasRestricoes.add(salva);
         }
 
-        if(!usuarioAtualizado.getRestaurantesFavoritados().isEmpty()){
+        if(usuarioAtualizado.getRestaurantesFavoritados() != null && !usuarioAtualizado.getRestaurantesFavoritados().isEmpty()){
             usuarioExistente.setRestaurantesFavoritados(usuarioAtualizado.getRestaurantesFavoritados());
         }
 
-        if(!usuarioAtualizado.getReceitasFavoritadas().isEmpty()){
+        if(usuarioAtualizado.getReceitasFavoritadas() != null && !usuarioAtualizado.getReceitasFavoritadas().isEmpty()){
             usuarioExistente.setReceitasFavoritadas(usuarioAtualizado.getReceitasFavoritadas());
         }
 
