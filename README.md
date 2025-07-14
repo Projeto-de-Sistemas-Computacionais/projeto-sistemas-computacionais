@@ -15,6 +15,35 @@ Este projeto foi desenvolvido por estudantes do **Instituto Federal de Educaçã
 
 Para o gerenciamento do projeto, utilizamos a metodologia **Scrum**, desta forma, realizando reuniões semanais dentro do instituto para discussão de idéias, tecnologias e estratégias, a fim de gerenciar nosso tempo para finalizar o aplicativo.
 
+### 👥 Estudantes
+
+#### 🖥️ Frontend
+  - Giovanna
+  - Gustavo Freitas
+  - Kimberly
+  - Laura Lampert
+  - Luisa
+  - Paola Ferreira
+
+<p align="center">
+<img width="800" height="800" alt="Equipe frontend" src="https://github.com/user-attachments/assets/cb48da1e-1981-4281-9574-d7991dc8b5da" />
+</p>
+
+#### 🗄️ Backend
+  - Daniel
+  - Douglas
+  - Eric
+  - Felipe
+  - Gabriel Etter
+  - Gabriel Jacob
+  - João
+  - Leonardo Dornelles
+  - Rafaela Irion (https://www.linkedin.com/in/rafaela-irion-606583289)
+
+<p align="center">
+<img width="800" height="800" alt="Equipe backend" src="https://github.com/user-attachments/assets/3fa45a36-6298-4b43-925e-808f53077883" />
+</p>
+
 ### 👨‍🏫 Orientação
 
 <p align="center">
@@ -24,6 +53,10 @@ Para o gerenciamento do projeto, utilizamos a metodologia **Scrum**, desta forma
 <p align="center">
   <strong>Prof. Rodrigo Remor Oliveira</strong><br>
   Professor orientador que nos guiou durante todas as etapas, propondo ideias e auxiliando o andamento do projeto.
+</p>
+
+<p align="center">
+https://www.linkedin.com/in/rodrigoremor
 </p>
 
 ---
