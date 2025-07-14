@@ -18,12 +18,13 @@ Para o gerenciamento do projeto, utilizamos a metodologia **Scrum**, desta forma
 ### 👥 Estudantes
 
 #### 🖥️ Frontend
-  - Giovanna
+  - Giovanna Dequi (https://www.linkedin.com/in/giovanna-dequi)
   - Gustavo Freitas
-  - Kimberly
-  - Laura Lampert
+  - Kimberly Figueira (https://www.linkedin.com/in/kimfigueira)
+  - Laura Lampert (www.linkedin.com/in/laura-lampert-74aa9325a)
   - Luisa
   - Paola Ferreira
+  - Marcos Gabriel (https://www.linkedin.com/in/marcos-gabriel-a9755922a/)
 
 <p align="center">
 <img width="800" height="800" alt="Equipe frontend" src="https://github.com/user-attachments/assets/cb48da1e-1981-4281-9574-d7991dc8b5da" />
@@ -33,9 +34,9 @@ Para o gerenciamento do projeto, utilizamos a metodologia **Scrum**, desta forma
   - Daniel
   - Douglas
   - Eric
-  - Felipe
+  - Felipe Boch (https://www.linkedin.com/in/felipeboch/)
   - Gabriel Etter
-  - Gabriel Jacob
+  - Gabriel Hendler (https://www.linkedin.com/in/gabriel-hendler-4aa78029b/)
   - João
   - Leonardo Dornelles
   - Rafaela Irion (https://www.linkedin.com/in/rafaela-irion-606583289)
